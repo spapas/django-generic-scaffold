@@ -1,0 +1,2 @@
+django-generic-scaffold
+=======================
