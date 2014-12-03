@@ -3,6 +3,8 @@ django-generic-scaffold
 
 With django-generic-scaffold you can quickly create and route CRUD generic class based views for your models so you will have a basic CRUD interface by writing only two lines of extra code! 
 
+django-generic-scaffold is different from other scaffolding tools because it generates all views/url routes *on-the-fly* and *not* by outputing python code.
+
 Installation
 ------------
 No pypi yet, install with ``pip install git+https://github.com/spapas/django-generic-scaffold``.
