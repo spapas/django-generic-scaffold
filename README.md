@@ -38,3 +38,9 @@ You may now visit ``http://127.0.0.1:8000/test_crud/`` to get a list of your ``T
 * Detail: ``http://127.0.0.1:8000/test_cruddetail/<id>`` (add ``app_name/testmodel_detail.html``)
 * Edit: ``http://127.0.0.1:8000/test_crudupdate/<id>`` (add ``app_name/testmodel_form.html``)
 * Delete: ``http://127.0.0.1:8000/test_cruddelete/<id>`` (add ``app_name/testmodel_confirm_delete.html``)
+
+The ``'test_crud'`` option you pass to the ``get_url_patterns`` method will just prepend this prefix o all created url.
+
+Configuration
+-------------
+TODO
