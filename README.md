@@ -7,7 +7,7 @@ django-generic-scaffold is different from other scaffolding tools because it gen
 
 Installation
 ------------
-No pypi yet, install with ``pip install git+https://github.com/spapas/django-generic-scaffold``.
+Install it with ``pip install django-generic-scaffold``, or if you want to use the latest version on github, try ``pip install git+https://github.com/spapas/django-generic-scaffold``.
 
 Since django-generic-scaffold uses no models, templates or tags, you may use it right away.
 
