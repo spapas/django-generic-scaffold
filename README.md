@@ -43,4 +43,30 @@ The ``'test_crud'`` option you pass to the ``get_url_patterns`` method will just
 
 Configuration
 -------------
-TODO
+Most of the time, you'll need to configure three things before using ``django-generic-scaffold``: The form class used for create and update, the access permissions for each generic class based view and the templates that each view will use. These can be configured just by settings options to your class.
+
+* To configure the form class that will be used, use the option ``form_class``.
+* To configure the template names to use something different than the defaults, use ``action_template_name`` where actions is ``list, detail, update, create`` or ``delete``. So to configure the detail template name to be ``foo.html`` you'll use the option ``detail_template_name = 'foo.html'``.
+* To set the permissions you have to set the ``permissions`` attribute to a dictionary of callables. The keys of that dictionary should be ``list, detail, update, create`` or ``delete`` while the values should be callables like ``login_required`` or ``permission_required('permission')`` etc. 
+
+Finally, for any other configuration of the generated class based views you'll need to define mixins that will be passed as a list using the option ``action_mixins`` (again action is either ``list, detail``, etc).
+
+Sample configuration
+--------------------
+
+A sample config that uses a different form (``TestForm``), defines different behavior using mixins for create and update and needs a logged in user for update / delete / create (but anonymous users can list and detail) is the following:
+
+```
+from django.contrib.auth.decorators import login_required
+
+class TestCrudManager(CrudManager):
+    model = models.TestModel
+    form_class = forms.TestForm
+    create_mixins = (CreateMixin, )
+    update_mixins = (UpdateMixin, )
+    permissions = {
+        'update': login_required,
+        'delete': login_required,
+        'create': login_required,
+    }
+```
