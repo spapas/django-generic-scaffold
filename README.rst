@@ -2,7 +2,7 @@
 django-generic-scaffold
 =======================
 
-With django-generic-scaffold you can quickly create and route CRUD generic class based views for your models so you will have a basic CRUD interface by writing only two lines of extra code! 
+With django-generic-scaffold you can quickly create and route CRUD generic class based views for your models so you will have a basic CRUD interface by writing only two lines of extra code!
 
 django-generic-scaffold is different from other scaffolding tools because it generates all views/url routes *on-the-fly* and *not* by outputing python code.
 
@@ -11,7 +11,8 @@ Installation
 
 Install it with ``pip install django-generic-scaffold``, or if you want to use the latest version on github, try ``pip install git+https://github.com/spapas/django-generic-scaffold``.
 
-Since django-generic-scaffold uses no models, templates or tags, you may use it right away.
+If you want to use the template tags of django-generic-scaffold to get the URLs of your scaffolds, please put it in your ``INSTALLED_APPS`` setting. If you
+don't need the template tags then no other installation is needed.
 
 Simple usage
 ============
@@ -52,7 +53,7 @@ Most of the time, you'll need to configure three things before using ``django-ge
 
 * To configure the form class that will be used, use the option ``form_class``.
 * To configure the template names to use something different than the defaults, use ``action_template_name`` where actions is ``list, detail, update, create`` or ``delete``. So to configure the detail template name to be ``foo.html`` you'll use the option ``detail_template_name = 'foo.html'``.
-* To set the permissions you have to set the ``permissions`` attribute to a dictionary of callables. The keys of that dictionary should be ``list, detail, update, create`` or ``delete`` while the values should be callables like ``login_required`` or ``permission_required('permission')`` etc. 
+* To set the permissions you have to set the ``permissions`` attribute to a dictionary of callables. The keys of that dictionary should be ``list, detail, update, create`` or ``delete`` while the values should be callables like ``login_required`` or ``permission_required('permission')`` etc.
 
 Finally, for any other configuration of the generated class based views you'll need to define mixins that will be passed as a list using the option ``action_mixins`` (again action is either ``list, detail``, etc).
 
@@ -77,8 +78,27 @@ A sample config that uses a different form (``TestForm``), defines different beh
         }
 
 
+Using the template tags
+=======================
+
+If you want to use the provided template tags to your templates, you'll need to add ``{% load generic_scaffold_tags %}`` near
+the top of your template. Then you may use ``get_url_for_action`` which will output the URL of the crud action immediately and
+receives three parameters: The django app name, the model name and the action list. For example to get the action for ``list``
+for the model test2 (careful you must use the internal model name) belonging to the app test1 you'll use
+``{% get_url_for_action "test1" "test2" "list" %}``.
+
+Finally, you can also use ``set_url_for_action`` which is a assignment_tag (https://docs.djangoproject.com/en/dev/howto/custom-template-tags/#assignment-tags)
+which sets a context variable with the url, for example ``{% set_url_for_action "test1" "test2" "list" as test1_test2_list_name %}``.
+
+
+
 Changelog
 =========
+
+v.0.1.1
+-------
+
+- Add template tags to get crud urls
 
 v.0.1
 -----
