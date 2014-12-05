@@ -20,20 +20,20 @@ Let's say you have defined a model named ``TestModel`` in your ``models.py``. In
 
 .. code-block:: python
 
-from generic_scaffold import CrudManager
-import models
+    from generic_scaffold import CrudManager
+    import models
 
-class TestCrudManager(CrudManager):
-    model = models.TestModel
+    class TestCrudManager(CrudManager):
+        model = models.TestModel
 
 
 Now, include the following lines to the ``urls.py`` of your application:
 
 .. code-block:: python
 
-from views import TestCrudManager
-test_crud = TestCrudManager()
-urlpatterns += test_crud.get_url_patterns('test_crud')
+    from views import TestCrudManager
+    test_crud = TestCrudManager()
+    urlpatterns += test_crud.get_url_patterns('test_crud')
 
 
 You may now visit ``http://127.0.0.1:8000/test_crud/`` to get a list of your ``TestModel`` instances, after you add a template named ``app_name/testmodel_list.html`` (which is the default template for the ``ListView``). Beyond the list view, you have also the following views:
@@ -63,18 +63,18 @@ A sample config that uses a different form (``TestForm``), defines different beh
 
 .. code-block:: python
 
-from django.contrib.auth.decorators import login_required
+    from django.contrib.auth.decorators import login_required
 
-class TestCrudManager(CrudManager):
-    model = models.TestModel
-    form_class = forms.TestForm
-    create_mixins = (CreateMixin, )
-    update_mixins = (UpdateMixin, )
-    permissions = {
-        'update': login_required,
-        'delete': login_required,
-        'create': login_required,
-    }
+    class TestCrudManager(CrudManager):
+        model = models.TestModel
+        form_class = forms.TestForm
+        create_mixins = (CreateMixin, )
+        update_mixins = (UpdateMixin, )
+        permissions = {
+            'update': login_required,
+            'delete': login_required,
+            'create': login_required,
+        }
 
 
 Changelog
