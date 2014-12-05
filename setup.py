@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-generic-scaffold',
-    version=0.1,
+    version='0.1.1',
     description='Generic scaffolding for Django',
 
     author='Serafeim Papastefanos',
@@ -13,9 +13,9 @@ setup(
     zip_safe=False,
     include_package_data=False,
     packages=find_packages(exclude=['tests.*', 'tests',]),
-    
+
     install_requires=['Django >=1.4', 'six'],
-    
+
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
