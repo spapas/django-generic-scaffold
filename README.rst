@@ -18,21 +18,23 @@ Simple usage
 
 Let's say you have defined a model named ``TestModel`` in your ``models.py``. In your ``views.py`` define a class that overrides ``CrudManager``:
 
-```
+.. code-block:: python
+
 from generic_scaffold import CrudManager
 import models
 
 class TestCrudManager(CrudManager):
     model = models.TestModel
-```
+
 
 Now, include the following lines to the ``urls.py`` of your application:
 
-```
+.. code-block:: python
+
 from views import TestCrudManager
 test_crud = TestCrudManager()
 urlpatterns += test_crud.get_url_patterns('test_crud')
-```
+
 
 You may now visit ``http://127.0.0.1:8000/test_crud/`` to get a list of your ``TestModel`` instances, after you add a template named ``app_name/testmodel_list.html`` (which is the default template for the ``ListView``). Beyond the list view, you have also the following views:
 
@@ -45,6 +47,7 @@ The ``'test_crud'`` option you pass to the ``get_url_patterns`` method will just
 
 Configuration
 =============
+
 Most of the time, you'll need to configure three things before using ``django-generic-scaffold``: The form class used for create and update, the access permissions for each generic class based view and the templates that each view will use. These can be configured just by settings options to your class.
 
 * To configure the form class that will be used, use the option ``form_class``.
@@ -58,7 +61,8 @@ Sample configuration
 
 A sample config that uses a different form (``TestForm``), defines different behavior using mixins for create and update and needs a logged in user for update / delete / create (but anonymous users can list and detail) is the following:
 
-```
+.. code-block:: python
+
 from django.contrib.auth.decorators import login_required
 
 class TestCrudManager(CrudManager):
@@ -71,7 +75,7 @@ class TestCrudManager(CrudManager):
         'delete': login_required,
         'create': login_required,
     }
-```
+
 
 Changelog
 =========
