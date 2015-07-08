@@ -28,7 +28,11 @@ class CrudManager(object, ):
 
     def __new__(cls):
         cls.app_label = cls.model._meta.app_label
-        cls.model_name = cls.model._meta.model_name
+        try:
+            cls.model_name = cls.model._meta.model_name
+        except:
+            cls.model_name = cls.model._meta.module_name
+            
         cls.list_url_name = '{0}_{1}'.format(cls.get_name(), 'list')
         cls.create_url_name = '{0}_{1}'.format(cls.get_name(), 'create')
         cls.detail_url_name = '{0}_{1}'.format(cls.get_name(), 'detail')
@@ -58,7 +62,11 @@ class CrudManager(object, ):
 
     @classmethod
     def get_name(cls):
-        return '{0}_{1}'.format(cls.model._meta.app_label, cls.model._meta.model_name)
+        try:
+            model_name = cls.model._meta.model_name
+        except:
+            model_name = cls.model._meta.module_name
+        return '{0}_{1}'.format(cls.model._meta.app_label, model_name)
 
     def get_list_class_view(self):
         name = '{0}_{1}'.format(self.get_name(), 'ListView')
