@@ -81,6 +81,7 @@ class CrudManager(object, ):
         name = '{0}_{1}'.format(self.get_name(), 'CreateView')
         options_dict = {
             'model': self.model,
+            'fields': '__all__',
         }
         if hasattr(self, 'form_template_name') and self.form_template_name:
             options_dict['template_name'] = self.form_template_name
@@ -115,6 +116,7 @@ class CrudManager(object, ):
         name = '{0}_{1}'.format(self.get_name(), 'UpdateView')
         options_dict = {
             'model': self.model,
+            'fields': '__all__',
         }
         if hasattr(self, 'form_template_name') and self.form_template_name:
             options_dict['template_name'] = self.form_template_name
@@ -133,6 +135,7 @@ class CrudManager(object, ):
         name = '{0}_{1}'.format(self.get_name(), 'DeleteView')
         options_dict = {
             'model': self.model,
+            'fields': '__all__',
             'get_success_url': lambda x: reverse(self.list_url_name),
         }
         if hasattr(self, 'delete_template_name') and self.delete_template_name:
@@ -149,10 +152,10 @@ class CrudManager(object, ):
     def get_url_patterns(self, prefix):
         return patterns('',
             url(r'^'+prefix+'/$', self.perms['list'](self.get_list_class_view().as_view()), name=self.list_url_name ),
-            url(r'^'+prefix+'create/$', self.get_create_class_view().as_view(), name=self.create_url_name ),
-            url(r'^'+prefix+'detail/(?P<pk>\d+)$', self.get_detail_class_view().as_view(), name=self.detail_url_name ),
-            url(r'^'+prefix+'update/(?P<pk>\d+)$', self.get_update_class_view().as_view(), name=self.update_url_name ),
-            url(r'^'+prefix+'delete/(?P<pk>\d+)$', self.get_delete_class_view().as_view(), name=self.delete_url_name ),
+            url(r'^'+prefix+'create/$', self.perms['create'](self.get_create_class_view().as_view()), name=self.create_url_name ),
+            url(r'^'+prefix+'detail/(?P<pk>\d+)$', self.perms['detail'](self.get_detail_class_view().as_view()), name=self.detail_url_name ),
+            url(r'^'+prefix+'update/(?P<pk>\d+)$', self.perms['update'](self.get_update_class_view().as_view()), name=self.update_url_name ),
+            url(r'^'+prefix+'delete/(?P<pk>\d+)$', self.perms['delete'](self.get_delete_class_view().as_view()), name=self.delete_url_name ),
         )
 
     @classmethod
