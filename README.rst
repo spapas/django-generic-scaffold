@@ -95,6 +95,12 @@ which sets a context variable with the url, for example ``{% set_url_for_action 
 Changelog
 =========
 
+v.0.1.2
+-------
+
+- Add tests and integrate with tox
+- Add some basic templates (non-empty, mainly for tests)
+
 v.0.1.1
 -------
 
