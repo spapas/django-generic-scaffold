@@ -1,3 +1,4 @@
+import django
 from django.conf.urls import patterns, url
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, CreateView , DetailView, UpdateView, DeleteView, TemplateView
@@ -158,13 +159,18 @@ class CrudManager(object, ):
         return klazz
 
     def get_url_patterns(self, prefix):
-        return patterns('',
+        url_patterns = [
             url(r'^'+prefix+'/$', self.perms['list'](self.get_list_class_view().as_view()), name=self.list_url_name ),
             url(r'^'+prefix+'create/$', self.perms['create'](self.get_create_class_view().as_view()), name=self.create_url_name ),
             url(r'^'+prefix+'detail/(?P<pk>\d+)$', self.perms['detail'](self.get_detail_class_view().as_view()), name=self.detail_url_name ),
             url(r'^'+prefix+'update/(?P<pk>\d+)$', self.perms['update'](self.get_update_class_view().as_view()), name=self.update_url_name ),
             url(r'^'+prefix+'delete/(?P<pk>\d+)$', self.perms['delete'](self.get_delete_class_view().as_view()), name=self.delete_url_name ),
-        )
+        ]
+        
+        if django.VERSION >= (1, 8, 0):
+            return url_patterns
+        else:
+            return patterns('', *url_patterns)
 
     @classmethod
     def get_url_names(cls, model):
