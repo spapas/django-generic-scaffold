@@ -82,18 +82,23 @@ Using the template tags
 =======================
 
 If you want to use the provided template tags to your templates, you'll need to add ``{% load generic_scaffold_tags %}`` near
-the top of your template. Then you may use ``get_url_for_action`` which will output the URL of the crud action immediately and
-receives three parameters: The django app name, the model name and the action list. For example to get the action for ``list``
-for the model test2 (careful you must use the internal model name) belonging to the app test1 you'll use
+the top of your template. Then you may use ``get_url_for_action`` which will output the URL of the crud action. This tag 
+needs three parameters: The django app name, the model name and the action name. For example to get the action for ``list``
+for the model ``test2`` (careful you must use the internal model name) belonging to the app ``test1`` you'll use
 ``{% get_url_for_action "test1" "test2" "list" %}``.
 
-Finally, you can also use ``set_url_for_action`` which is a assignment_tag (https://docs.djangoproject.com/en/dev/howto/custom-template-tags/#assignment-tags)
-which sets a context variable with the url, for example ``{% set_url_for_action "test1" "test2" "list" as test1_test2_list_name %}``.
+Finally, you can also use ``set_url_for_action`` (which is an assignment_tag https://docs.djangoproject.com/en/dev/howto/custom-template-tags/#assignment-tags)
+to set a context variable with the url, for example ``{% set_url_for_action "test1" "test2" "list" as test1_test2_list_name %}`` and then you can 
+use ``{{ test1_test2_list_name }}`` in your templates.
 
 
 
 Changelog
 =========
+
+New stuff, not yet in pip
+
+- Add support and configure tox for Django 1.9 
 
 v.0.1.2
 -------
