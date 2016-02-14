@@ -76,6 +76,8 @@ class CrudManager(object, ):
         }
         if hasattr(self, 'list_template_name') and self.list_template_name:
             options_dict['template_name'] = self.list_template_name
+        else:
+            options_dict['template_name'] = 'generic_scaffold/list.html'
 
         parent_classes_list = []
         parent_classes_list.extend(self.list_mixins)
@@ -94,6 +96,8 @@ class CrudManager(object, ):
         }
         if hasattr(self, 'form_template_name') and self.form_template_name:
             options_dict['template_name'] = self.form_template_name
+        else:
+            options_dict['template_name'] = 'generic_scaffold/form.html'
         if hasattr(self, 'form_class') and self.form_class:
             options_dict['form_class'] = self.form_class
 
@@ -112,6 +116,8 @@ class CrudManager(object, ):
         }
         if hasattr(self, 'detail_template_name') and self.detail_template_name:
             options_dict['template_name'] = self.detail_template_name
+        else:
+            options_dict['template_name'] = 'generic_scaffold/detail.html'
 
         parent_classes_list = []
         parent_classes_list.extend(self.detail_mixins)
@@ -129,6 +135,8 @@ class CrudManager(object, ):
         }
         if hasattr(self, 'form_template_name') and self.form_template_name:
             options_dict['template_name'] = self.form_template_name
+        else:
+            options_dict['template_name'] = 'generic_scaffold/form.html'
         if hasattr(self, 'form_class') and self.form_class:
             options_dict['form_class'] = self.form_class
 
@@ -149,6 +157,8 @@ class CrudManager(object, ):
         }
         if hasattr(self, 'delete_template_name') and self.delete_template_name:
             options_dict['template_name'] = self.delete_template_name
+        else:
+            options_dict['template_name'] = 'generic_scaffold/confirm_delete.html'
 
         parent_classes_list = []
         parent_classes_list.extend(self.delete_mixins)
