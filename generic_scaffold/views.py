@@ -18,6 +18,16 @@ def identity(f):
     return f
 
 
+class FallbackTemplateMixin(object, ):
+    def get_template_names(self):
+        names = super(FallbackTemplateMixin, self).get_template_names()
+        
+        if not hasattr(self, 'template_name') and not self.template_name:
+            names.append('generic_scaffold/list.html')
+        
+        return names
+    
+
 class CrudManager(object, ):
     _registry = []
     __metaclass__ = CrudTracker
@@ -74,12 +84,11 @@ class CrudManager(object, ):
         options_dict = {
             'model': self.model,
         }
+        
         if hasattr(self, 'list_template_name') and self.list_template_name:
             options_dict['template_name'] = self.list_template_name
-        else:
-            options_dict['template_name'] = 'generic_scaffold/list.html'
 
-        parent_classes_list = []
+        parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.list_mixins)
         parent_classes_list.append(ListView)
 
