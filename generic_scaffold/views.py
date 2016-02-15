@@ -9,7 +9,6 @@ except:
     from django.db.models.loading import get_model
 
 
-
 class CrudTracker(type):
     def __init__(cls, name, bases, attrs):
         try:
@@ -44,7 +43,8 @@ class FallbackTemplateMixin(object, ):
             fallback_name = self.kind 
         names.append('generic_scaffold/{0}.html'.format(fallback_name))
         return names
-    
+        
+   
 
 class CrudManager(object, ):
     _registry = []
@@ -61,6 +61,8 @@ class CrudManager(object, ):
             cls.model_name = cls.model._meta.model_name
         except:
             cls.model_name = cls.model._meta.module_name
+            
+        
         
         if cls.prefix:
             cls.list_url_name = '{0}_{1}_{2}'.format(cls.prefix, cls.get_name(), 'list')
@@ -74,7 +76,13 @@ class CrudManager(object, ):
             cls.detail_url_name = '{0}_{1}'.format(cls.get_name(), 'detail')
             cls.update_url_name = '{0}_{1}'.format(cls.get_name(), 'update')
             cls.delete_url_name = '{0}_{1}'.format(cls.get_name(), 'delete')
-        
+            
+        cls.model.list_url_name = cls.list_url_name
+        cls.model.detail_url_name = cls.detail_url_name
+        cls.model.create_url_name = cls.create_url_name
+        cls.model.update_url_name = cls.update_url_name
+        cls.model.delete_url_name = cls.delete_url_name
+                
         return super(CrudManager, cls).__new__(cls)
 
     def __init__(self, *args, **kwargs):

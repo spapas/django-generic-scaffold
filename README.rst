@@ -2,7 +2,7 @@
 django-generic-scaffold
 =======================
 
-With django-generic-scaffold you can quickly create and route CRUD generic class based views for your models so you will have a basic CRUD interface by writing only two lines of extra code!
+With django-generic-scaffold you can quickly create and route CRUD generic class based views for your models so you will have a basic CRUD interface by writing only a couple of lines of extra code!
 
 django-generic-scaffold is different from other scaffolding tools because it generates all views/url routes *on-the-fly* and *not* by outputing python code.
 
@@ -11,30 +11,34 @@ Installation
 
 Install it with ``pip install django-generic-scaffold``, or if you want to use the latest version on github, try ``pip install git+https://github.com/spapas/django-generic-scaffold``.
 
-If you want to use the template tags of django-generic-scaffold to get the URLs of your scaffolds, please put it in your ``INSTALLED_APPS`` setting. If you
-don't need the template tags then no other installation is needed.
+If you want to use the template tags and the fallback templates of django-generic-scaffold, please put it in your ``INSTALLED_APPS`` setting. If you
+don't need the template tags or fallback templates then no other installation is needed.
 
 Simple usage
 ============
 
-Let's say you have defined a model named ``TestModel`` in your ``models.py``. In your ``views.py`` define a class that overrides ``CrudManager``:
+Let's say you have defined a model named ``Book`` in your ``models.py``. In your ``views.py`` or, even better in a module named ``scaffolding.py`` define a class that overrides ``CrudManager``:
 
 .. code-block:: python
 
     from generic_scaffold import CrudManager
     import models
 
-    class TestCrudManager(CrudManager):
-        model = models.TestModel
+    class BookCrudManager(CrudManager):
+        model = models.Book
+        prefix = 'books'
 
 
 Now, include the following lines to the ``urls.py`` of your application:
 
 .. code-block:: python
 
-    from views import TestCrudManager
-    test_crud = TestCrudManager()
-    urlpatterns += test_crud.get_url_patterns('test_crud')
+    from scaffolding import BookCrudManager # or from views import BookCrudManager depending on where you've put it
+    book_crud = TestCrudManager()
+    
+    # [...] define your urlpatters here
+    
+    urlpatterns += test_crud.get_url_patterns()
 
 
 You may now visit ``http://127.0.0.1:8000/test_crud/`` to get a list of your ``TestModel`` instances, after you add a template named ``app_name/testmodel_list.html`` (which is the default template for the ``ListView``). Beyond the list view, you have also the following views:
@@ -96,10 +100,13 @@ use ``{{ test1_test2_list_name }}`` in your templates.
 Changelog
 =========
 
-New stuff, not yet in pip
+v.0.2.0
+-------
 
+- Braking changes for API and template tags
+- Add example project
 - Add support and configure tox for Django 1.9 
-- Add fallback templates: A bunch of fallback templates have been added (``generic_scaffold/{list, detail, form, confirm_delete}.html``).
+- A bunch of fallback templates have been added (``generic_scaffold/{list, detail, form, confirm_delete}.html``)
 - Use API (get_url_names) for tests and add it to docs
 - Add (url) prefix as an attribute to CrudManager and fix templatetag to use it. Prefix has to be unique to make API and template tags easier to use
 
