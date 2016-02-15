@@ -21,7 +21,7 @@ test_crud = TestCrudManager()
 urlpatterns = test_crud.get_url_patterns('test/')
 
 test_implicit_crud = TestImplicitCrudManager()
-urlpatterns = test_implicit_crud.get_url_patterns('test_implicit/')
+urlpatterns += test_implicit_crud.get_url_patterns('test_implicit/')
 
     
 class EmptyParameterTest(TestCase):
@@ -78,6 +78,7 @@ class TemplateOrderingTest(TestCase):
     def setUp(self):
         self.client = Client()
         TestModel.objects.create(test='test')
+        TestModelImplicit.objects.create(test='test')
         
     def test_fallback_templates(self):
         list_resp = self.client.get( reverse("generic_scaffold_testmodel_list"))
@@ -97,7 +98,13 @@ class TemplateOrderingTest(TestCase):
         
     def test_implicit_templates(self):
         list_resp = self.client.get( reverse("generic_scaffold_testmodelimplicit_list"))
-        self.assertTemplateUsed(list_resp, 'generic_scaffold/list_implicit.html' )    
+        self.assertTemplateUsed(list_resp, 'generic_scaffold/testmodelimplicit_list.html' )    
+        
+        create_resp = self.client.get( reverse("generic_scaffold_testmodelimplicit_create"))
+        self.assertTemplateUsed(create_resp, 'generic_scaffold/testmodelimplicit_form.html' )    
+        
+        update_resp = self.client.get( reverse("generic_scaffold_testmodelimplicit_update", args=[1]))
+        self.assertTemplateUsed(update_resp, 'generic_scaffold/testmodelimplicit_form.html' )    
         
         
         

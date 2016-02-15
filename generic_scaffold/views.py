@@ -110,12 +110,11 @@ class CrudManager(object, ):
         }
         if hasattr(self, 'form_template_name') and self.form_template_name:
             options_dict['template_name'] = self.form_template_name
-        else:
-            options_dict['template_name'] = 'generic_scaffold/form.html'
+        
         if hasattr(self, 'form_class') and self.form_class:
             options_dict['form_class'] = self.form_class
 
-        parent_classes_list = []
+        parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.create_mixins)
         parent_classes_list.append(CreateView)
         
@@ -131,10 +130,8 @@ class CrudManager(object, ):
         }
         if hasattr(self, 'detail_template_name') and self.detail_template_name:
             options_dict['template_name'] = self.detail_template_name
-        else:
-            options_dict['template_name'] = 'generic_scaffold/detail.html'
-
-        parent_classes_list = []
+        
+        parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.detail_mixins)
         parent_classes_list.append(DetailView)
 
@@ -151,12 +148,11 @@ class CrudManager(object, ):
         }
         if hasattr(self, 'form_template_name') and self.form_template_name:
             options_dict['template_name'] = self.form_template_name
-        else:
-            options_dict['template_name'] = 'generic_scaffold/form.html'
+        
         if hasattr(self, 'form_class') and self.form_class:
             options_dict['form_class'] = self.form_class
 
-        parent_classes_list = []
+        parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.update_mixins)
         parent_classes_list.append(UpdateView)
 
@@ -174,10 +170,8 @@ class CrudManager(object, ):
         }
         if hasattr(self, 'delete_template_name') and self.delete_template_name:
             options_dict['template_name'] = self.delete_template_name
-        else:
-            options_dict['template_name'] = 'generic_scaffold/confirm_delete.html'
-
-        parent_classes_list = []
+        
+        parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.delete_mixins)
         parent_classes_list.append(DeleteView)
 
