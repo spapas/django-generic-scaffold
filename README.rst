@@ -99,6 +99,7 @@ Changelog
 New stuff, not yet in pip
 
 - Add support and configure tox for Django 1.9 
+- Add fallback templates: A bunch of fallback templates have been added (``generic_scaffold/{list, detail, form, confirm_delete}.html``).
 
 v.0.1.2
 -------

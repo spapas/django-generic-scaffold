@@ -21,10 +21,13 @@ def identity(f):
 class FallbackTemplateMixin(object, ):
     def get_template_names(self):
         names = super(FallbackTemplateMixin, self).get_template_names()
-        
-        if not hasattr(self, 'template_name') and not self.template_name:
-            names.append('generic_scaffold/list.html')
-        
+        if self.kind == 'delete':
+            fallback_name = 'confirm_delete'
+        elif self.kind in ['create', 'update']:
+            fallback_name = 'form'
+        else:
+            fallback_name = self.kind 
+        names.append('generic_scaffold/{0}.html'.format(fallback_name))
         return names
     
 
@@ -82,6 +85,7 @@ class CrudManager(object, ):
     def get_list_class_view(self):
         name = '{0}_{1}'.format(self.get_name(), 'ListView')
         options_dict = {
+            'kind': 'list',
             'model': self.model,
         }
         
@@ -100,6 +104,7 @@ class CrudManager(object, ):
     def get_create_class_view(self):
         name = '{0}_{1}'.format(self.get_name(), 'CreateView')
         options_dict = {
+            'kind': 'create',
             'model': self.model,
             'fields': '__all__',
         }
@@ -121,6 +126,7 @@ class CrudManager(object, ):
     def get_detail_class_view(self):
         name = '{0}_{1}'.format(self.get_name(), 'DetailView')
         options_dict = {
+            'kind': 'detail',
             'model': self.model,
         }
         if hasattr(self, 'detail_template_name') and self.detail_template_name:
@@ -139,6 +145,7 @@ class CrudManager(object, ):
     def get_update_class_view(self):
         name = '{0}_{1}'.format(self.get_name(), 'UpdateView')
         options_dict = {
+            'kind': 'update',
             'model': self.model,
             'fields': '__all__',
         }
@@ -161,6 +168,7 @@ class CrudManager(object, ):
         name = '{0}_{1}'.format(self.get_name(), 'DeleteView')
         options_dict = {
             'model': self.model,
+            'kind': 'delete',
             'fields': '__all__',
             'get_success_url': lambda x: reverse(self.list_url_name),
         }

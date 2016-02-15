@@ -1,4 +1,9 @@
 {% extends 'generic_scaffold/base.html' %}
 {% block content %}
-{{ form }}
+{{ object }}
+<form method='POST'>
+    {% csrf_token %}
+    {{ form }}
+    <input type='submit'>
+</form>
 {% endblock %}
