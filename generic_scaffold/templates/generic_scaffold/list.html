@@ -1,4 +1,19 @@
 {% extends 'generic_scaffold/base.html' %}
+{% load generic_scaffold_tags %}
 {% block content %}
-{{ object_list }}
+{% set_url_for_action None "create" as create_url %}
+<a href='{% url create_url %}'>Create</a>
+<ul>
+    {% for object in object_list %}
+        <li>
+            {{ object }}
+            {% set_url_for_action None "detail" as detail_url %}
+            {% set_url_for_action None "update" as update_url %}
+            {% set_url_for_action None "delete" as delete_url %}
+            <a href='{% url detail_url object.id %}'>detail</a>
+            <a href='{% url update_url object.id %}'>update</a>
+            <a href='{% url delete_url object.id %}'>delete</a>
+        </li>
+    {% endfor %}
+</ul>
 {% endblock %}

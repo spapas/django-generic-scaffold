@@ -1,4 +1,7 @@
 {% extends 'generic_scaffold/base.html' %}
+{% load generic_scaffold_tags %}
 {% block content %}
 {{ object }}
+{% set_url_for_action None "list" as list_url %}
+<a href='{% url list_url %}'>List</a>
 {% endblock %}
