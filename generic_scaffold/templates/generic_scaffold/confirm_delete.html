@@ -3,6 +3,7 @@
 {{ object }}
 <form method='POST'>
     {% csrf_token  %}
+    {% csrf_token %}
     <input type='submit'>
 </form>
 {% endblock %}

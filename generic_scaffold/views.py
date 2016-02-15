@@ -21,10 +21,13 @@ def identity(f):
 class FallbackTemplateMixin(object, ):
     def get_template_names(self):
         names = super(FallbackTemplateMixin, self).get_template_names()
-        
-        if not hasattr(self, 'template_name') and not self.template_name:
-            names.append('generic_scaffold/list.html')
-        
+        if self.kind == 'delete':
+            fallback_name = 'confirm_delete'
+        elif self.kind in ['create', 'update']:
+            fallback_name = 'form'
+        else:
+            fallback_name = self.kind 
+        names.append('generic_scaffold/{0}.html'.format(fallback_name))
         return names
     
 
@@ -82,6 +85,7 @@ class CrudManager(object, ):
     def get_list_class_view(self):
         name = '{0}_{1}'.format(self.get_name(), 'ListView')
         options_dict = {
+            'kind': 'list',
             'model': self.model,
         }
         
@@ -100,17 +104,17 @@ class CrudManager(object, ):
     def get_create_class_view(self):
         name = '{0}_{1}'.format(self.get_name(), 'CreateView')
         options_dict = {
+            'kind': 'create',
             'model': self.model,
             'fields': '__all__',
         }
         if hasattr(self, 'form_template_name') and self.form_template_name:
             options_dict['template_name'] = self.form_template_name
-        else:
-            options_dict['template_name'] = 'generic_scaffold/form.html'
+        
         if hasattr(self, 'form_class') and self.form_class:
             options_dict['form_class'] = self.form_class
 
-        parent_classes_list = []
+        parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.create_mixins)
         parent_classes_list.append(CreateView)
         
@@ -121,14 +125,13 @@ class CrudManager(object, ):
     def get_detail_class_view(self):
         name = '{0}_{1}'.format(self.get_name(), 'DetailView')
         options_dict = {
+            'kind': 'detail',
             'model': self.model,
         }
         if hasattr(self, 'detail_template_name') and self.detail_template_name:
             options_dict['template_name'] = self.detail_template_name
-        else:
-            options_dict['template_name'] = 'generic_scaffold/detail.html'
-
-        parent_classes_list = []
+        
+        parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.detail_mixins)
         parent_classes_list.append(DetailView)
 
@@ -139,17 +142,17 @@ class CrudManager(object, ):
     def get_update_class_view(self):
         name = '{0}_{1}'.format(self.get_name(), 'UpdateView')
         options_dict = {
+            'kind': 'update',
             'model': self.model,
             'fields': '__all__',
         }
         if hasattr(self, 'form_template_name') and self.form_template_name:
             options_dict['template_name'] = self.form_template_name
-        else:
-            options_dict['template_name'] = 'generic_scaffold/form.html'
+        
         if hasattr(self, 'form_class') and self.form_class:
             options_dict['form_class'] = self.form_class
 
-        parent_classes_list = []
+        parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.update_mixins)
         parent_classes_list.append(UpdateView)
 
@@ -161,15 +164,14 @@ class CrudManager(object, ):
         name = '{0}_{1}'.format(self.get_name(), 'DeleteView')
         options_dict = {
             'model': self.model,
+            'kind': 'delete',
             'fields': '__all__',
             'get_success_url': lambda x: reverse(self.list_url_name),
         }
         if hasattr(self, 'delete_template_name') and self.delete_template_name:
             options_dict['template_name'] = self.delete_template_name
-        else:
-            options_dict['template_name'] = 'generic_scaffold/confirm_delete.html'
-
-        parent_classes_list = []
+        
+        parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.delete_mixins)
         parent_classes_list.append(DeleteView)
 
