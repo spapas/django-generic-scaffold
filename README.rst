@@ -100,6 +100,8 @@ New stuff, not yet in pip
 
 - Add support and configure tox for Django 1.9 
 - Add fallback templates: A bunch of fallback templates have been added (``generic_scaffold/{list, detail, form, confirm_delete}.html``).
+- Use API (get_url_names) for tests and add it to docs
+- Add (url) prefix as an attribute to CrudManager and fix templatetag to use it
 
 v.0.1.2
 -------
