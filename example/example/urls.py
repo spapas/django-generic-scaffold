@@ -23,4 +23,4 @@ urlpatterns = [
 ]
 
 
-urlpatterns += book_crud.get_url_patterns('book_crud')
+urlpatterns += book_crud.get_url_patterns()
