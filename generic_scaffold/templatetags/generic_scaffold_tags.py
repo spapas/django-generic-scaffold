@@ -6,13 +6,11 @@ from generic_scaffold import get_url_names
 register = template.Library()
 
 @register.simple_tag
-def get_url_for_action(app, model, prefix, action):
-    
-    url = get_url_names(app, model, prefix)[action]
+def get_url_for_action(prefix, action):
+    url = get_url_names(prefix)[action]
     return url
 
 @register.assignment_tag
-def set_url_for_action(app, model, prefix, action):
-    
-    url = get_url_names(app, model, prefix)[action]
+def set_url_for_action(prefix, action):
+    url = get_url_names(prefix)[action]
     return url

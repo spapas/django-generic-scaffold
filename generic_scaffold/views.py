@@ -17,6 +17,15 @@ class CrudTracker(type):
                 return
         except NameError:
             return
+            
+        try:
+            cls.prefix
+        except AttributeError:
+            cls.prefix = None
+            
+        for r in CrudManager._registry:
+            if r.prefix == cls.prefix:
+                raise django.core.exceptions.ImproperlyConfigured
         CrudManager._registry.append(cls)
 
 
@@ -53,14 +62,13 @@ class CrudManager(object, ):
         except:
             cls.model_name = cls.model._meta.module_name
         
-        try:
-            prefix = cls.prefix 
-            cls.list_url_name = '{0}_{1}_{2}'.format(prefix, cls.get_name(), 'list')
-            cls.create_url_name = '{0}_{1}_{2}'.format(prefix, cls.get_name(), 'create')
-            cls.detail_url_name = '{0}_{1}_{2}'.format(prefix, cls.get_name(), 'detail')
-            cls.update_url_name = '{0}_{1}_{2}'.format(prefix, cls.get_name(), 'update')
-            cls.delete_url_name = '{0}_{1}_{2}'.format(prefix, cls.get_name(), 'delete')
-        except AttributeError:
+        if cls.prefix:
+            cls.list_url_name = '{0}_{1}_{2}'.format(cls.prefix, cls.get_name(), 'list')
+            cls.create_url_name = '{0}_{1}_{2}'.format(cls.prefix, cls.get_name(), 'create')
+            cls.detail_url_name = '{0}_{1}_{2}'.format(cls.prefix, cls.get_name(), 'detail')
+            cls.update_url_name = '{0}_{1}_{2}'.format(cls.prefix, cls.get_name(), 'update')
+            cls.delete_url_name = '{0}_{1}_{2}'.format(cls.prefix, cls.get_name(), 'delete')
+        else:
             cls.list_url_name = '{0}_{1}'.format(cls.get_name(), 'list')
             cls.create_url_name = '{0}_{1}'.format(cls.get_name(), 'create')
             cls.detail_url_name = '{0}_{1}'.format(cls.get_name(), 'detail')
@@ -194,13 +202,10 @@ class CrudManager(object, ):
         return klazz
 
     def get_url_patterns(self, ):
-        try:
-            prefix = self.prefix 
-        except AttributeError:
-            prefix = None
-            
+        prefix = self.prefix or ''
+        
         url_patterns = [
-            url(r'^'+prefix+'/$', self.perms['list'](self.get_list_class_view().as_view()), name=self.list_url_name, ),
+            url(r'^'+prefix+'$', self.perms['list'](self.get_list_class_view().as_view()), name=self.list_url_name, ),
             url(r'^'+prefix+'create/$', self.perms['create'](self.get_create_class_view().as_view()), name=self.create_url_name ),
             url(r'^'+prefix+'detail/(?P<pk>\d+)$', self.perms['detail'](self.get_detail_class_view().as_view()), name=self.detail_url_name ),
             url(r'^'+prefix+'update/(?P<pk>\d+)$', self.perms['update'](self.get_update_class_view().as_view()), name=self.update_url_name ),
@@ -213,9 +218,9 @@ class CrudManager(object, ):
             return patterns('', *url_patterns)
 
     @classmethod
-    def get_url_names(cls, model, prefix):
+    def get_url_names(cls, prefix):
         for r in cls._registry:
-            if r.model == model and r.prefix==prefix:
+            if r.prefix==prefix:
                 return {
                     'list': r.list_url_name,
                     'create': r.create_url_name,
@@ -224,6 +229,5 @@ class CrudManager(object, ):
                     'detail': r.detail_url_name,
                 }
                 
-def get_url_names(app, modelname, prefix):
-    model_class = get_model(app, modelname)
-    return CrudManager.get_url_names(model_class, prefix)
+def get_url_names(prefix):
+    return CrudManager.get_url_names(prefix)
