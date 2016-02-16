@@ -3,28 +3,33 @@ import django
 from django.core.urlresolvers import reverse
 from django.db import models
 from generic_scaffold import CrudManager, get_url_names
-
+from generic_scaffold.templatetags.generic_scaffold_tags import set_urls_for_scaffold
 
 class TestModel(models.Model):
     test = models.CharField(max_length=16)
+    
+class TestEmptyModel(models.Model):
+    test = models.CharField(max_length=16)
 
 class TestModelImplicit(models.Model):
+    test = models.CharField(max_length=16)
+    
+class TestModelExplicit(models.Model):
     test = models.CharField(max_length=16)
 
 class TestCrudManager(CrudManager):
     model = TestModel
     prefix = 'test'
-
     
 class TestEmptyPrefixCrudManager(CrudManager):
-    model = TestModel
+    model = TestEmptyModel
 
 class TestImplicitCrudManager(CrudManager):
     model = TestModelImplicit
     prefix = 'test_implicit'
 
 class TestExplicitCrudManager(CrudManager):
-    model = TestModelImplicit
+    model = TestModelExplicit
     prefix = 'test_explicit'
     list_template_name = 'generic_scaffold/list.html'
     form_template_name = 'generic_scaffold/form.html'
@@ -45,10 +50,17 @@ test_explicit_crud = TestExplicitCrudManager()
 urlpatterns += test_explicit_crud.get_url_patterns()
 
 
-class DuplicatePrefixTest(TestCase):
+class DuplicatesTest(TestCase):
     def test_duplicate_prefix(self):
         with self.assertRaises(django.core.exceptions.ImproperlyConfigured):
             klazz = type("Thrower", (CrudManager, ), {'prefix': 'test',} )
+            
+    def test_duplicate_model(self):
+        with self.assertRaises(django.core.exceptions.ImproperlyConfigured):
+            klazz = type("Thrower", (CrudManager, ), {
+                'prefix': 'foo',
+                'model': TestModel,
+            } )
         
         
 
@@ -61,11 +73,11 @@ class EmptyPrefixTest(TestCase):
         self.delete_view = self.crud.get_delete_class_view()
         self.detail_view = self.crud.get_detail_class_view()
 
-        TestModel.objects.create(test='test')
+        TestEmptyModel.objects.create(test='test')
 
     def test_urls_have_correct_name(self):
         for attr in ['list', 'create', 'update', 'delete', 'detail']:
-            self.assertEquals( getattr(self.crud, attr+'_url_name'), "generic_scaffold_testmodel_{0}".format(attr))
+            self.assertEquals( getattr(self.crud, attr+'_url_name'), "generic_scaffold_testemptymodel_{0}".format(attr))
 
     def test_views_have_correct_parent_class(self):
         self.assertEquals(self.list_view.__bases__[-1].__name__, "ListView")
@@ -76,14 +88,14 @@ class EmptyPrefixTest(TestCase):
 
     def test_view_have_correct_model(self):
         for attr in ['list', 'create', 'update', 'delete', 'detail']:
-            self.assertEquals( getattr(self, attr+'_view').model.__name__, "TestModel")
+            self.assertEquals( getattr(self, attr+'_view').model.__name__, "TestEmptyModel")
 
     def test_with_client(self):
         c = Client()
 
         list_resp = c.get( reverse(get_url_names(None)['list']))
         self.assertEquals(list_resp.status_code, 200)
-        self.assertTrue('TestModel object' in list_resp.content)
+        self.assertTrue('TestEmptyModel object' in list_resp.content)
 
         create_resp = c.get( reverse(get_url_names(None)['create']))
         self.assertEquals(create_resp.status_code, 200)
@@ -95,11 +107,11 @@ class EmptyPrefixTest(TestCase):
 
         detail_resp = c.get( reverse(get_url_names(None)['detail'], args=[1]))
         self.assertEquals(detail_resp.status_code, 200)
-        self.assertTrue('TestModel object' in detail_resp.content)
+        self.assertTrue('TestEmptyModel object' in detail_resp.content)
 
         delete_resp = c.get( reverse(get_url_names(None)['delete'], args=[1]))
         self.assertEquals(delete_resp.status_code, 200)
-        self.assertTrue('TestModel object' in delete_resp.content)
+        self.assertTrue('TestEmptyModel object' in delete_resp.content)
 
 
 
@@ -132,23 +144,23 @@ class SimpleParameterTest(TestCase):
     def test_with_client(self):
         c = Client()
 
-        list_resp = c.get( reverse(get_url_names('test')['list']))
+        list_resp = c.get( reverse(get_url_names(prefix='test')['list']))
         self.assertEquals(list_resp.status_code, 200)
         self.assertTrue('TestModel object' in list_resp.content)
 
-        create_resp = c.get( reverse(get_url_names('test')['create']))
+        create_resp = c.get( reverse(get_url_names(prefix='test')['create']))
         self.assertEquals(create_resp.status_code, 200)
         self.assertTrue('id_test' in create_resp.content)
 
-        update_resp = c.get( reverse(get_url_names('test')['update'], args=[1]))
+        update_resp = c.get( reverse(get_url_names(prefix='test')['update'], args=[1]))
         self.assertEquals(update_resp.status_code, 200)
         self.assertTrue('id_test' in update_resp.content)
 
-        detail_resp = c.get( reverse(get_url_names('test')['detail'], args=[1]))
+        detail_resp = c.get( reverse(get_url_names(prefix='test')['detail'], args=[1]))
         self.assertEquals(detail_resp.status_code, 200)
         self.assertTrue('TestModel object' in detail_resp.content)
 
-        delete_resp = c.get( reverse(get_url_names('test')['delete'], args=[1]))
+        delete_resp = c.get( reverse(get_url_names(prefix='test')['delete'], args=[1]))
         self.assertEquals(delete_resp.status_code, 200)
         self.assertTrue('TestModel object' in delete_resp.content)
 
@@ -158,52 +170,78 @@ class TemplateOrderingTest(TestCase):
         self.client = Client()
         TestModel.objects.create(test='test')
         TestModelImplicit.objects.create(test='test')
+        TestModelExplicit.objects.create(test='test')
 
     def test_fallback_templates(self):
-        list_resp = self.client.get( reverse(get_url_names('test')['list']))
+        list_resp = self.client.get( reverse(get_url_names(prefix='test')['list']))
         self.assertTemplateUsed(list_resp, 'generic_scaffold/list.html' )
 
-        create_resp = self.client.get( reverse(get_url_names('test')['create']))
+        create_resp = self.client.get( reverse(get_url_names(prefix='test')['create']))
         self.assertTemplateUsed(create_resp, 'generic_scaffold/form.html' )
 
-        update_resp = self.client.get( reverse(get_url_names('test')['update'], args=[1]))
+        update_resp = self.client.get( reverse(get_url_names(prefix='test')['update'], args=[1]))
         self.assertTemplateUsed(update_resp, 'generic_scaffold/form.html' )
 
-        detail_resp = self.client.get( reverse(get_url_names('test')['detail'], args=[1]))
+        detail_resp = self.client.get( reverse(get_url_names(prefix='test')['detail'], args=[1]))
         self.assertTemplateUsed(detail_resp, 'generic_scaffold/detail.html' )
 
-        delete_resp = self.client.get( reverse(get_url_names('test')['delete'], args=[1]))
+        delete_resp = self.client.get( reverse(get_url_names(prefix='test')['delete'], args=[1]))
         self.assertTemplateUsed(delete_resp, 'generic_scaffold/confirm_delete.html' )
 
     def test_implicit_templates(self):
-        list_resp = self.client.get( reverse(get_url_names('test_implicit')['list']))
+        list_resp = self.client.get( reverse(get_url_names(prefix='test_implicit')['list']))
         self.assertTemplateUsed(list_resp, 'generic_scaffold/testmodelimplicit_list.html' )
 
-        create_resp = self.client.get( reverse(get_url_names('test_implicit')['create']))
+        create_resp = self.client.get( reverse(get_url_names(prefix='test_implicit')['create']))
         self.assertTemplateUsed(create_resp, 'generic_scaffold/testmodelimplicit_form.html' )
 
-        update_resp = self.client.get( reverse(get_url_names('test_implicit')['update'], args=[1]))
+        update_resp = self.client.get( reverse(get_url_names(prefix='test_implicit')['update'], args=[1]))
         self.assertTemplateUsed(update_resp, 'generic_scaffold/testmodelimplicit_form.html' )
 
-        detail_resp = self.client.get( reverse(get_url_names('test_implicit')['detail'], args=[1]))
+        detail_resp = self.client.get( reverse(get_url_names(prefix='test_implicit')['detail'], args=[1]))
         self.assertTemplateUsed(detail_resp, 'generic_scaffold/testmodelimplicit_detail.html' )
 
-        delete_resp = self.client.get( reverse(get_url_names('test_implicit')['delete'], args=[1]))
+        delete_resp = self.client.get( reverse(get_url_names(prefix='test_implicit')['delete'], args=[1]))
         self.assertTemplateUsed(delete_resp, 'generic_scaffold/testmodelimplicit_confirm_delete.html' )
 
     def test_explicit_templates(self):
-        list_resp = self.client.get( reverse(get_url_names('test_explicit')['list']))
+        list_resp = self.client.get( reverse(get_url_names(prefix='test_explicit')['list']))
         self.assertTemplateUsed(list_resp, 'generic_scaffold/list.html' )
 
-        create_resp = self.client.get( reverse(get_url_names('test_explicit')['create']))
+        create_resp = self.client.get( reverse(get_url_names(prefix='test_explicit')['create']))
         self.assertTemplateUsed(create_resp, 'generic_scaffold/form.html' )
 
-        update_resp = self.client.get( reverse(get_url_names('test_explicit')['update'], args=[1]))
+        update_resp = self.client.get( reverse(get_url_names(prefix='test_explicit')['update'], args=[1]))
         self.assertTemplateUsed(update_resp, 'generic_scaffold/form.html' )
 
-        detail_resp = self.client.get( reverse(get_url_names('test_explicit')['detail'], args=[1]))
+        detail_resp = self.client.get( reverse(get_url_names(prefix='test_explicit')['detail'], args=[1]))
         self.assertTemplateUsed(detail_resp, 'generic_scaffold/detail.html' )
 
-        delete_resp = self.client.get( reverse(get_url_names('test_explicit')['delete'], args=[1]))
+        delete_resp = self.client.get( reverse(get_url_names(prefix='test_explicit')['delete'], args=[1]))
         self.assertTemplateUsed(delete_resp, 'generic_scaffold/confirm_delete.html' )
 
+
+class TestUrlNames(TestCase):
+    def setUp(self):
+        pass
+        
+    def test_get_url_names_with_prefix(self):
+        names = get_url_names(prefix='test')
+        for attr in ['list', 'create', 'update', 'delete', 'detail']:
+            self.assertEquals( names[attr], "{0}_generic_scaffold_testmodel_{1}".format(TestCrudManager.prefix, attr))
+            
+    def test_get_url_names_with_model(self):
+        names = get_url_names(app='generic_scaffold', model='testmodel')
+        for attr in ['list', 'create', 'update', 'delete', 'detail']:
+            self.assertEquals( names[attr], "{0}_generic_scaffold_testmodel_{1}".format(TestCrudManager.prefix, attr))
+            
+class TestTempalteTags(TestCase):
+    def test_template_tags_with_prefix(self):
+        names = set_urls_for_scaffold(prefix='test')
+        for attr in ['list', 'create', 'update', 'delete', 'detail']:
+            self.assertEquals( names[attr], "{0}_generic_scaffold_testmodel_{1}".format(TestCrudManager.prefix, attr))
+            
+    def test_get_url_names_with_model(self):
+        names = set_urls_for_scaffold(app='generic_scaffold', model='testmodel')
+        for attr in ['list', 'create', 'update', 'delete', 'detail']:
+            self.assertEquals( names[attr], "{0}_generic_scaffold_testmodel_{1}".format(TestCrudManager.prefix, attr))
