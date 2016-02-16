@@ -1,0 +1,11 @@
+{% extends 'generic_scaffold/base.html' %}
+{% load generic_scaffold_tags %}
+{% block content %}
+<form method='POST'>
+    {% csrf_token %}
+    {{ form }}
+    <input type='submit'>
+</form>
+{% set_urls_for_scaffold app="books" model="book" as urls %}
+<a href='{% url urls.list %}'>List</a>
+{% endblock %}
