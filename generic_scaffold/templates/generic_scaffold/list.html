@@ -5,15 +5,11 @@
 <a href='{% url object_list.model.create_url_name %}'>Create</a>
 <ul>
     {% for object in object_list %}
-        1{{ object.list_url_name }}2
         <li>
             {{ object }}
-            {% set_url_for_action 'books' "detail" as detail_url %}
-            {% set_url_for_action 'books' "update" as update_url %}
-            {% set_url_for_action 'books' "delete" as delete_url %}
-            <a href='{% url detail_url object.id %}'>detail</a>
-            <a href='{% url update_url object.id %}'>update</a>
-            <a href='{% url delete_url object.id %}'>delete</a>
+            <a href='{% url object.detail_url_name object.id %}'>detail</a>
+            <a href='{% url object.update_url_name object.id %}'>update</a>
+            <a href='{% url object.delete_url_name object.id %}'>delete</a>
         </li>
     {% endfor %}
 </ul>
