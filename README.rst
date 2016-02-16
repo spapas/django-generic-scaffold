@@ -41,14 +41,41 @@ Now, include the following lines to the ``urls.py`` of your application:
     urlpatterns += test_crud.get_url_patterns()
 
 
-You may now visit ``http://127.0.0.1:8000/test_crud/`` to get a list of your ``TestModel`` instances, after you add a template named ``app_name/testmodel_list.html`` (which is the default template for the ``ListView``). Beyond the list view, you have also the following views:
+You may now visit ``http://127.0.0.1:8000/books`` to get a list of your ``TestModel`` instances. 
+The following methods have also been created: 
 
-* Create: ``http://127.0.0.1:8000/test_crudcreate/`` (add ``app_name/testmodel_form.html``)
-* Detail: ``http://127.0.0.1:8000/test_cruddetail/<id>`` (add ``app_name/testmodel_detail.html``)
-* Edit: ``http://127.0.0.1:8000/test_crudupdate/<id>`` (add ``app_name/testmodel_form.html``)
-* Delete: ``http://127.0.0.1:8000/test_cruddelete/<id>`` (add ``app_name/testmodel_confirm_delete.html``)
+* Create: ``http://127.0.0.1:8000/bookscreate``       
+* Detail: ``http://127.0.0.1:8000/booksdetail/<id>``  
+* Edit: ``http://127.0.0.1:8000/booksupdate/<id>``    
+* Delete: ``http://127.0.0.1:8000/booksdelete/<id>``  
 
-The ``'test_crud'`` option you pass to the ``get_url_patterns`` method will just prepend this prefix o all created url.
+If you don't do anything else, the default fallback templates will be used. 
+You should add after you add a template named ``app_name/testmodel_list.html`` (which is the default template for the ``ListView``). Beyond the list view, you have also the following views:
+
+The ``prefix`` option you set to the ``BooksCrudManager`` method will just prepend this prefix to all created urls
+and can also be used to get your url names for reversing.
+
+Template selection
+==================
+
+There's a bunch of fallback templates that will be used if no other template can be used instead.
+These template are for testing purposes only and should be overriden (unless you want to
+quickly see that everything works). Now, there are two ways you can redefine your templates:
+
+- Implicitly: Just add appropriate templates depending on your app/model name, for example for
+``app_name`` and ``TestModel`` you can add the following templates:
+For create/update add ``app_name/testmodel_form.html``, 
+for list add ``app_name/testmodel_list.html``, 
+for detail add ``app_name/testmodel_detail.html``,
+for delete add ``app_name/testmodel_confirm_delete.html``.
+
+- Explicitly: You can use the ``action_template_name`` configuration option to explicitly 
+set which templates will be used for each action (please check below for more).
+
+So, the priority of templates is:
+- Explicit templates (if configured)
+- Implicit templates (if found)
+- Fallback templates (as a last resort)
 
 Configuration
 =============
@@ -56,10 +83,39 @@ Configuration
 Most of the time, you'll need to configure three things before using ``django-generic-scaffold``: The form class used for create and update, the access permissions for each generic class based view and the templates that each view will use. These can be configured just by settings options to your class.
 
 * To configure the form class that will be used, use the option ``form_class``.
-* To configure the template names to use something different than the defaults, use ``action_template_name`` where actions is ``list, detail, update, create`` or ``delete``. So to configure the detail template name to be ``foo.html`` you'll use the option ``detail_template_name = 'foo.html'``.
+* To configure the template names explicitly, use ``action_template_name`` where actions is ``list, detail, update, create`` or ``delete``. So to configure the detail template name to be ``foo.html`` you'll use the option ``detail_template_name = 'foo.html'``.
 * To set the permissions you have to set the ``permissions`` attribute to a dictionary of callables. The keys of that dictionary should be ``list, detail, update, create`` or ``delete`` while the values should be callables like ``login_required`` or ``permission_required('permission')`` etc.
 
 Finally, for any other configuration of the generated class based views you'll need to define mixins that will be passed as a list using the option ``action_mixins`` (again action is either ``list, detail``, etc).
+
+
+API and template tags
+=====================
+
+If you want to use the provided template tags to your templates, you'll need to add ``{% load generic_scaffold_tags %}`` near
+the top of your template. Then you may use ``set_urls_for_scaffold`` which will output the URLs of the 
+selected scaffold depending on your configuration. This tag can receive 
+three parameters: The django app name, the model name and the prefix name. You can either use
+the combination of app name / model name or just the prefix. It will return a dictionary with all
+the scaffolded urls for this model. For example, 
+ For example to get the url names for the model ``test2`` (careful you must use the internal model name) 
+ belonging to the app ``test1`` you'll use
+``{% set_urls_for_scaffold "test1" "test2" as url_names %}`` and then you could use the attributes ``list,
+create, detail, update, delete`` of that object to reverse and get the corresponding urls, for example
+use ``{% url url_names.list }`` to get the url for list. 
+
+There's also a similar function named get_url_names that you can use to get the urls for your scaffolds.
+
+For example, you can do something like:
+
+```
+from generic_scaffold import get_url_names
+from django.core.urlresolvers import reverse
+
+names = get_url_names(prefix='test')
+list_url = reverse(names['list'])
+```
+
 
 Sample configuration
 ====================
@@ -71,6 +127,7 @@ A sample config that uses a different form (``TestForm``), defines different beh
     from django.contrib.auth.decorators import login_required
 
     class TestCrudManager(CrudManager):
+        prefix = 'test'
         model = models.TestModel
         form_class = forms.TestForm
         create_mixins = (CreateMixin, )
@@ -81,19 +138,6 @@ A sample config that uses a different form (``TestForm``), defines different beh
             'create': login_required,
         }
 
-
-Using the template tags
-=======================
-
-If you want to use the provided template tags to your templates, you'll need to add ``{% load generic_scaffold_tags %}`` near
-the top of your template. Then you may use ``get_url_for_action`` which will output the URL of the crud action. This tag 
-needs three parameters: The django app name, the model name and the action name. For example to get the action for ``list``
-for the model ``test2`` (careful you must use the internal model name) belonging to the app ``test1`` you'll use
-``{% get_url_for_action "test1" "test2" "list" %}``.
-
-Finally, you can also use ``set_url_for_action`` (which is an assignment_tag https://docs.djangoproject.com/en/dev/howto/custom-template-tags/#assignment-tags)
-to set a context variable with the url, for example ``{% set_url_for_action "test1" "test2" "list" as test1_test2_list_name %}`` and then you can 
-use ``{{ test1_test2_list_name }}`` in your templates.
 
 
 
@@ -108,7 +152,9 @@ v.0.2.0
 - Add support and configure tox for Django 1.9 
 - A bunch of fallback templates have been added (``generic_scaffold/{list, detail, form, confirm_delete}.html``)
 - Use API (get_url_names) for tests and add it to docs
-- Add (url) prefix as an attribute to CrudManager and fix templatetag to use it. Prefix has to be unique to make API and template tags easier to use
+- Add (url) prefix as an attribute to CrudManager and fix templatetag to use it. 
+- Prefix has to be unique to make API and template tags easier to use
+- Model also has to be unique
 
 v.0.1.2
 -------

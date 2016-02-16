@@ -7,5 +7,5 @@ register = template.Library()
 
 @register.assignment_tag
 def set_urls_for_scaffold(app=None, model=None, prefix=None):
-    url_name = get_url_names(app, model, prefix)
-    return url_name
+    url_names = get_url_names(app, model, prefix)
+    return url_names
