@@ -9,6 +9,16 @@ except:
     from django.db.models.loading import get_model
 
 
+def get_model_name(model):
+    try:
+        return model._meta.model_name
+    except:
+        return model._meta.module_name
+
+def get_app_label(model):
+    return model._meta.app_label
+    
+
 class CrudTracker(type):
     def __init__(cls, name, bases, attrs):
         try:
@@ -24,6 +34,10 @@ class CrudTracker(type):
             
         for r in CrudManager._registry:
             if r.prefix == cls.prefix:
+                raise django.core.exceptions.ImproperlyConfigured
+            
+            if get_model_name(r.model)==get_model_name(cls.model) and \
+                get_app_label(r.model) == get_app_label(cls.model):
                 raise django.core.exceptions.ImproperlyConfigured
         CrudManager._registry.append(cls)
 
@@ -56,14 +70,9 @@ class CrudManager(object, ):
     update_mixins = []
 
     def __new__(cls):
-        cls.app_label = cls.model._meta.app_label
-        try:
-            cls.model_name = cls.model._meta.model_name
-        except:
-            cls.model_name = cls.model._meta.module_name
+        cls.app_label = get_app_label(cls.model)
+        cls.model_name = get_model_name(cls.model)
             
-        
-        
         if cls.prefix:
             cls.list_url_name = '{0}_{1}_{2}'.format(cls.prefix, cls.get_name(), 'list')
             cls.create_url_name = '{0}_{1}_{2}'.format(cls.prefix, cls.get_name(), 'create')
@@ -226,9 +235,9 @@ class CrudManager(object, ):
             return patterns('', *url_patterns)
 
     @classmethod
-    def get_url_names(cls, prefix):
+    def get_url_names(cls, prefix=None, model_class=None):
         for r in cls._registry:
-            if r.prefix==prefix:
+            if r.prefix==prefix or model_class and r.model==model_class:
                 return {
                     'list': r.list_url_name,
                     'create': r.create_url_name,
@@ -237,5 +246,8 @@ class CrudManager(object, ):
                     'detail': r.detail_url_name,
                 }
                 
-def get_url_names(prefix):
-    return CrudManager.get_url_names(prefix)
+def get_url_names(app=None, model=None, prefix=None):
+    model_class = None
+    if app and model: 
+        model_class = get_model(app, model)
+    return CrudManager.get_url_names(prefix=prefix, model_class=model_class)
