@@ -62,20 +62,20 @@ There's a bunch of fallback templates that will be used if no other template can
 These template are for testing purposes only and should be overriden (unless you want to
 quickly see that everything works). Now, there are two ways you can redefine your templates:
 
-- Implicitly: Just add appropriate templates depending on your app/model name, for example for
-``app_name`` and ``TestModel`` you can add the following templates:
+* Implicitly: Just add appropriate templates depending on your app/model name, for example for ``app_name`` and ``TestModel`` you can add the following templates:
+
 For create/update add ``app_name/testmodel_form.html``, 
 for list add ``app_name/testmodel_list.html``, 
 for detail add ``app_name/testmodel_detail.html``,
 for delete add ``app_name/testmodel_confirm_delete.html``.
 
-- Explicitly: You can use the ``action_template_name`` configuration option to explicitly 
-set which templates will be used for each action (please check below for more).
+* Explicitly: You can use the ``action_template_name`` configuration option to explicitly set which templates will be used for each action (please check below for more).
 
 So, the priority of templates is:
-- Explicit templates (if configured)
-- Implicit templates (if found)
-- Fallback templates (as a last resort)
+
+* Explicit templates (if configured)
+* Implicit templates (if found)
+* Fallback templates (as a last resort)
 
 Configuration
 =============
@@ -94,13 +94,11 @@ API and template tags
 
 If you want to use the provided template tags to your templates, you'll need to add ``{% load generic_scaffold_tags %}`` near
 the top of your template. Then you may use ``set_urls_for_scaffold`` which will output the URLs of the 
-selected scaffold depending on your configuration. This tag can receive 
+selected scaffold depending on your configuration. This tag can receive
 three parameters: The django app name, the model name and the prefix name. You can either use
 the combination of app name / model name or just the prefix. It will return a dictionary with all
-the scaffolded urls for this model. For example, 
- For example to get the url names for the model ``test2`` (careful you must use the internal model name) 
- belonging to the app ``test1`` you'll use
-``{% set_urls_for_scaffold "test1" "test2" as url_names %}`` and then you could use the attributes ``list,
+the scaffolded urls for this model. For example, to get the url names for the model ``test2`` (careful you must use the internal model name) 
+belonging to the app ``test1`` you'll use ``{% set_urls_for_scaffold "test1" "test2" as url_names %}`` and then you could use the attributes ``list,
 create, detail, update, delete`` of that object to reverse and get the corresponding urls, for example
 use ``{% url url_names.list }`` to get the url for list. 
 
@@ -108,13 +106,14 @@ There's also a similar function named get_url_names that you can use to get the 
 
 For example, you can do something like:
 
-```
-from generic_scaffold import get_url_names
-from django.core.urlresolvers import reverse
+.. code-block:: python
 
-names = get_url_names(prefix='test')
-list_url = reverse(names['list'])
-```
+    from generic_scaffold import get_url_names
+    from django.core.urlresolvers import reverse
+
+    names = get_url_names(prefix='test')
+    list_url = reverse(names['list'])
+
 
 
 Sample configuration
