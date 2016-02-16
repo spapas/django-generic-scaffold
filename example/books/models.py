@@ -10,4 +10,4 @@ class Book(models.Model):
     category = models.CharField(max_length=32)
 
     def get_absolute_url(self):
-        return reverse(generic_scaffold.get_url_names(None)['detail'], args=[self.id])
+        return reverse(self.detail_url_name, args=[self.id])
