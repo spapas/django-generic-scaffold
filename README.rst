@@ -12,7 +12,7 @@ Installation
 Install it with ``pip install django-generic-scaffold``, or if you want to use the latest version on github, try ``pip install git+https://github.com/spapas/django-generic-scaffold``.
 
 If you want to use the template tags and the fallback templates of django-generic-scaffold, please put ``generic_scaffold`` in your ``INSTALLED_APPS`` setting. If you
-don't need the template tags or fallback templates then no other installation is needed.
+don't need the template tags or fallback templates then no modifying of your settings is needed, just go ahead and use it!
 
 Simple usage
 ============
@@ -34,14 +34,14 @@ Now, include the following lines to the ``urls.py`` of your application:
 .. code-block:: python
 
     from scaffolding import BookCrudManager # or from views import BookCrudManager depending on where you've put it
-    book_crud = TestCrudManager()
+    book_crud = BookCrudManager() 
     
     # [...] define your urlpatters here
     
-    urlpatterns += test_crud.get_url_patterns()
+    urlpatterns += book_crud.get_url_patterns()
 
 
-You may now visit ``http://127.0.0.1:8000/books`` to get a list of your ``TestModel`` instances. 
+You may now visit ``http://127.0.0.1:8000/books`` (or whatever was your ``prefix``) to get a list of your ``Book`` instances. 
 The following methods have also been created: 
 
 * Create: ``http://127.0.0.1:8000/bookscreate``       
@@ -49,8 +49,9 @@ The following methods have also been created:
 * Edit: ``http://127.0.0.1:8000/booksupdate/<id>``    
 * Delete: ``http://127.0.0.1:8000/booksdelete/<id>``  
 
-If you don't do anything else, the default fallback templates will be used. 
-You should add after you add a template named ``app_name/testmodel_list.html`` (which is the default template for the ``ListView``). Beyond the list view, you have also the following views:
+If you don't do anything else, the default fallback templates will be used (they are ugly and should only be used for testing). 
+You should add a template named ``app_name/testmodel_list.html`` (which is the default template for the ``ListView``) to override
+the fallback templates - please read the next section for more info on that.
 
 The ``prefix`` option you set to the ``BooksCrudManager`` method will just prepend this prefix to all created urls
 and can also be used to get your url names for reversing.
@@ -62,14 +63,16 @@ There's a bunch of fallback templates that will be used if no other template can
 These template are for testing purposes only and should be overriden (unless you want to
 quickly see that everything works). Now, there are two ways you can redefine your templates:
 
-* Implicitly: Just add appropriate templates depending on your app/model name, for example for ``app_name`` and ``TestModel`` you can add the following templates:
+* Implicitly: Just add appropriate templates depending on your app/model name
+(similarly to normal class-based-views), for example for ``app_name`` and ``TestModel`` you can add the following templates:
 
 For create/update add ``app_name/testmodel_form.html``, 
 for list add ``app_name/testmodel_list.html``, 
 for detail add ``app_name/testmodel_detail.html``,
 for delete add ``app_name/testmodel_confirm_delete.html``.
 
-* Explicitly: You can use the ``action_template_name`` configuration option to explicitly set which templates will be used for each action (please check below for more).
+* Explicitly: You can use the ``action_template_name`` configuration option to explicitly set which templates will be used for each action. The ``action``
+could be ``list, detail, update, create`` or ``delete``. So to configure the detail template name to be ``foo.html`` you'll use the option ``detail_template_name = 'foo.html'``.
 
 So, the priority of templates is:
 
@@ -80,14 +83,15 @@ So, the priority of templates is:
 Configuration
 =============
 
-Most of the time, you'll need to configure three things before using ``django-generic-scaffold``: The form class used for create and update, the access permissions for each generic class based view and the templates that each view will use. These can be configured just by settings options to your class.
+Most of the time, you'll need to configure three things before using ``django-generic-scaffold``: The form class used for create and update views, the access permissions for each generic class based view and the templates that each view will use. These can be configured just by settings attributes to your ``CrudManager`` class.
 
 * To configure the form class that will be used, use the option ``form_class``.
-* To configure the template names explicitly, use ``action_template_name`` where actions is ``list, detail, update, create`` or ``delete``. So to configure the detail template name to be ``foo.html`` you'll use the option ``detail_template_name = 'foo.html'``.
 * To set the permissions you have to set the ``permissions`` attribute to a dictionary of callables. The keys of that dictionary should be ``list, detail, update, create`` or ``delete`` while the values should be callables like ``login_required`` or ``permission_required('permission')`` etc.
+* To configure the template names explicitly, use ``action_template_name``.
 
-Finally, for any other configuration of the generated class based views you'll need to define mixins that will be passed as a list using the option ``action_mixins`` (again action is either ``list, detail``, etc).
+Finally, for any other configuration of the generated class based views you'll need to define mixins that will be passed to the generated CBV classes as a list using the option ``action_mixins`` (again action is either ``list, detail``, etc).
 
+Using mixins you can do whatever you want to your resulting CBV classes -- also, by forcing you to use mixins django-generic-scaffold will help you follow bet code practices (DRY).
 
 API and template tags
 =====================
@@ -97,12 +101,12 @@ the top of your template. Then you may use ``set_urls_for_scaffold`` which will 
 selected scaffold depending on your configuration. This tag can receive
 three parameters: The django app name, the model name and the prefix name. You can either use
 the combination of app name / model name or just the prefix. It will return a dictionary with all
-the scaffolded urls for this model. For example, to get the url names for the model ``test2`` (careful you must use the internal model name) 
+the scaffolded urls for this model. For example, to get the url names for the model ``test2`` (careful you must use the internal model name so for ``Test2`` use ``test2`` ) 
 belonging to the app ``test1`` you'll use ``{% set_urls_for_scaffold "test1" "test2" as url_names %}`` and then you could use the attributes ``list,
 create, detail, update, delete`` of that object to reverse and get the corresponding urls, for example
 use ``{% url url_names.list }`` to get the url for list. 
 
-There's also a similar function named get_url_names that you can use to get the urls for your scaffolds.
+There's also a similar API function named get_url_names that you can use to get the urls for your scaffolds.
 
 For example, you can do something like:
 
