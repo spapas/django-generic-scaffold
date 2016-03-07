@@ -9,3 +9,5 @@ register = template.Library()
 def set_urls_for_scaffold(app=None, model=None, prefix=None):
     url_names = get_url_names(app, model, prefix)
     return url_names
+
+    
