@@ -2,6 +2,7 @@ import django
 from django.conf.urls import patterns, url
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, CreateView , DetailView, UpdateView, DeleteView, TemplateView
+from six import with_metaclass
 try:
     from django.apps import apps
     get_model = apps.get_model
@@ -21,6 +22,7 @@ def get_app_label(model):
 
 class CrudTracker(type):
     def __init__(cls, name, bases, attrs):
+
         try:
             if CrudManager not in bases:
                 return
@@ -31,7 +33,7 @@ class CrudTracker(type):
             cls.prefix
         except AttributeError:
             cls.prefix = None
-            
+
         for r in CrudManager._registry:
             if r.prefix == cls.prefix:
                 raise django.core.exceptions.ImproperlyConfigured
@@ -60,9 +62,8 @@ class FallbackTemplateMixin(object, ):
         
    
 
-class CrudManager(object, ):
+class CrudManager(with_metaclass(CrudTracker, object, )):
     _registry = []
-    __metaclass__ = CrudTracker
     list_mixins = []
     delete_mixins = []
     detail_mixins = []
@@ -73,7 +74,7 @@ class CrudManager(object, ):
         cls.app_label = get_app_label(cls.model)
         cls.model_name = get_model_name(cls.model)
             
-        if cls.prefix:
+        if hasattr(cls, 'prefix') and cls.prefix:
             cls.list_url_name = '{0}_{1}_{2}'.format(cls.prefix, cls.get_name(), 'list')
             cls.create_url_name = '{0}_{1}_{2}'.format(cls.prefix, cls.get_name(), 'create')
             cls.detail_url_name = '{0}_{1}_{2}'.format(cls.prefix, cls.get_name(), 'detail')
@@ -219,7 +220,7 @@ class CrudManager(object, ):
         return klazz
 
     def get_url_patterns(self, ):
-        prefix = self.prefix or ''
+        prefix = hasattr(self, 'prefix') and self.prefix or ''
         
         url_patterns = [
             url(r'^'+prefix+'$', self.perms['list'](self.get_list_class_view().as_view()), name=self.list_url_name, ),

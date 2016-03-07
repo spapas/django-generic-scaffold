@@ -1,7 +1,7 @@
 from generic_scaffold import CrudManager
-import models
+from books.models import Book
 
 class BookCrudManager(CrudManager):
-    model = models.Book
+    model = Book
     prefix = 'books'
     

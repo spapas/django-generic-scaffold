@@ -95,23 +95,23 @@ class EmptyPrefixTest(TestCase):
 
         list_resp = c.get( reverse(get_url_names(None)['list']))
         self.assertEquals(list_resp.status_code, 200)
-        self.assertTrue('TestEmptyModel object' in list_resp.content)
+        self.assertTrue(b'TestEmptyModel object' in list_resp.content)
 
         create_resp = c.get( reverse(get_url_names(None)['create']))
         self.assertEquals(create_resp.status_code, 200)
-        self.assertTrue('id_test' in create_resp.content)
+        self.assertTrue(b'id_test' in create_resp.content)
 
         update_resp = c.get( reverse(get_url_names(None)['update'], args=[1]))
         self.assertEquals(update_resp.status_code, 200)
-        self.assertTrue('id_test' in update_resp.content)
+        self.assertTrue(b'id_test' in update_resp.content)
 
         detail_resp = c.get( reverse(get_url_names(None)['detail'], args=[1]))
         self.assertEquals(detail_resp.status_code, 200)
-        self.assertTrue('TestEmptyModel object' in detail_resp.content)
+        self.assertTrue(b'TestEmptyModel object' in detail_resp.content)
 
         delete_resp = c.get( reverse(get_url_names(None)['delete'], args=[1]))
         self.assertEquals(delete_resp.status_code, 200)
-        self.assertTrue('TestEmptyModel object' in delete_resp.content)
+        self.assertTrue(b'TestEmptyModel object' in delete_resp.content)
 
 
 
@@ -146,23 +146,23 @@ class SimpleParameterTest(TestCase):
 
         list_resp = c.get( reverse(get_url_names(prefix='test')['list']))
         self.assertEquals(list_resp.status_code, 200)
-        self.assertTrue('TestModel object' in list_resp.content)
+        self.assertTrue(b'TestModel object' in list_resp.content)
 
         create_resp = c.get( reverse(get_url_names(prefix='test')['create']))
         self.assertEquals(create_resp.status_code, 200)
-        self.assertTrue('id_test' in create_resp.content)
+        self.assertTrue(b'id_test' in create_resp.content)
 
         update_resp = c.get( reverse(get_url_names(prefix='test')['update'], args=[1]))
         self.assertEquals(update_resp.status_code, 200)
-        self.assertTrue('id_test' in update_resp.content)
+        self.assertTrue(b'id_test' in update_resp.content)
 
         detail_resp = c.get( reverse(get_url_names(prefix='test')['detail'], args=[1]))
         self.assertEquals(detail_resp.status_code, 200)
-        self.assertTrue('TestModel object' in detail_resp.content)
+        self.assertTrue(b'TestModel object' in detail_resp.content)
 
         delete_resp = c.get( reverse(get_url_names(prefix='test')['delete'], args=[1]))
         self.assertEquals(delete_resp.status_code, 200)
-        self.assertTrue('TestModel object' in delete_resp.content)
+        self.assertTrue(b'TestModel object' in delete_resp.content)
 
 
 class TemplateOrderingTest(TestCase):
