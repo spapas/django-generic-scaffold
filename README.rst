@@ -141,11 +141,23 @@ A sample config that uses a different form (``TestForm``), defines different beh
             'create': login_required,
         }
 
+Django/python version support
+-----------------------------
+
+As can be seen from tox.ini, the tests are run for Python 2.7 and Django 1.6-1.9 and for Python 3.5 and Django 1.8-1.9, so these would be the supported versions.
+
 
 
 
 Changelog
 =========
+
+v.0.3.0
+-------
+
+- Drop support for Django 1.4 and 1.5
+- Add support for python 3 (python 3.5) for Django 1.8 and 1.9
+
 
 v.0.2.0
 -------
