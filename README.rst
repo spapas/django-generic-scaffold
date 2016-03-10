@@ -63,16 +63,14 @@ There's a bunch of fallback templates that will be used if no other template can
 These template are for testing purposes only and should be overriden (unless you want to
 quickly see that everything works). Now, there are two ways you can redefine your templates:
 
-* Implicitly: Just add appropriate templates depending on your app/model name
-(similarly to normal class-based-views), for example for ``app_name`` and ``TestModel`` you can add the following templates:
+* Implicitly: Just add appropriate templates depending on your app/model name (similarly to normal class-based-views), for example for ``app_name`` and ``TestModel`` you can add the following templates:
 
 For create/update add ``app_name/testmodel_form.html``, 
 for list add ``app_name/testmodel_list.html``, 
 for detail add ``app_name/testmodel_detail.html``,
 for delete add ``app_name/testmodel_confirm_delete.html``.
 
-* Explicitly: You can use the ``action_template_name`` configuration option to explicitly set which templates will be used for each action. The ``action``
-could be ``list, detail, update, create`` or ``delete``. So to configure the detail template name to be ``foo.html`` you'll use the option ``detail_template_name = 'foo.html'``.
+* Explicitly: You can use the ``action_template_name`` configuration option to explicitly set which templates will be used for each action. The ``action`` could be ``list, detail, update, create`` or ``delete``. So to configure the detail template name to be ``foo.html`` you'll use the option ``detail_template_name = 'foo.html'``.
 
 So, the priority of templates is:
 
@@ -142,10 +140,20 @@ A sample config that uses a different form (``TestForm``), defines different beh
         }
 
 
+Django/python version support
+=============================
 
+As can be seen from tox.ini, the tests are run for Python 2.7 and Django 1.6-1.9 and for Python 3.5 and Django 1.8-1.9, so these would be the supported versions.
+        
 
 Changelog
 =========
+
+v.0.3.0
+-------
+
+- Drop support for Django 1.4 and 1.5
+- Add support for python 3 (python 3.5) for Django 1.8 and 1.9
 
 v.0.2.0
 -------
