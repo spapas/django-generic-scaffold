@@ -153,6 +153,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
         
         if hasattr(self, 'form_class') and self.form_class:
             options_dict['form_class'] = self.form_class
+            options_dict['fields'] = None
 
         parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.create_mixins)
@@ -191,6 +192,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
         
         if hasattr(self, 'form_class') and self.form_class:
             options_dict['form_class'] = self.form_class
+            options_dict['fields'] = None
 
         parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.update_mixins)
