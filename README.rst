@@ -6,6 +6,11 @@ With django-generic-scaffold you can quickly create and CRUD generic class based
 
 django-generic-scaffold is different from other scaffolding tools because it generates all views/url routes *on-the-fly* (by creating subclasses of normal django-classbased views) and *not* by outputing python code.
 
+Example
+=======
+
+I've added an example project of using this django-generic-scaffold: https://github.com/spapas/generic-scaffold-demo
+
 Installation
 ============
 
