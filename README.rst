@@ -148,6 +148,11 @@ As can be seen from tox.ini, the tests are run for Python 2.7 and Django 1.6-1.9
 Changelog
 =========
 
+v.0.3.2
+-------
+
+- Include templates in pip package (old version did not include them due to wrong setup.py configuration)
+
 v.0.3.1
 -------
 
