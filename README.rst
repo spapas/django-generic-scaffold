@@ -9,7 +9,7 @@ django-generic-scaffold is different from other scaffolding tools because it gen
 Example
 =======
 
-I've added an example project of using this django-generic-scaffold: https://github.com/spapas/generic-scaffold-demo
+I've added an example project of using django-generic-scaffold: https://github.com/spapas/generic-scaffold-demo
 
 Installation
 ============
