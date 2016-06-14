@@ -148,7 +148,7 @@ As can be seen from tox.ini, the tests are run for Python 2.7 and Django 1.6-1.9
 Changelog
 =========
 
-v.0.3.1 (not in pip yet)
+v.0.3.1
 -------
 
 - Fix bug with '__all__' fields when adding form_class 
