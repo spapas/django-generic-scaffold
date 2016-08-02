@@ -153,6 +153,11 @@ As can be seen from tox.ini, the tests are run for Python 2.7 and Django 1.6-1.9
 Changelog
 =========
 
+v.0.3.3
+-------
+
+- Fix bug with django 1.9 not containing the (url) patterns function 
+
 v.0.3.2
 -------
 
