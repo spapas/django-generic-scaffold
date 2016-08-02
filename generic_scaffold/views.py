@@ -1,5 +1,6 @@
 import django
-from django.conf.urls import patterns, url
+from django.conf.urls import url
+
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, CreateView , DetailView, UpdateView, DeleteView, TemplateView
 from six import with_metaclass
@@ -235,6 +236,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
         if django.VERSION >= (1, 8, 0):
             return url_patterns
         else:
+            from django.conf.urls import patterns
             return patterns('', *url_patterns)
 
     @classmethod
