@@ -4,7 +4,7 @@ django-generic-scaffold
 
 With django-generic-scaffold you can quickly create and CRUD generic class based views for your models so you will have a basic CRUD interface to your models by writing only a couple of lines of extra code! The purpose of this CRUD interface is, as opposed to django-admin, to be used by users and not staff members.
 
-django-generic-scaffold is different from other scaffolding tools because it generates all views/url routes *on-the-fly* (by creating subclasses of normal django-classbased views) and *not* by outputing python code.
+django-generic-scaffold is different from other scaffolding tools because it generates all views/url routes *on-the-fly* (by creating subclasses of normal django class-based views) and *not* by outputing python code.
 
 Example
 =======
@@ -92,9 +92,11 @@ Most of the time, you'll need to configure three things before using ``django-ge
 * To set the permissions you have to set the ``permissions`` attribute to a dictionary of callables. The keys of that dictionary should be ``list, detail, update, create`` or ``delete`` while the values should be callables like ``login_required`` or ``permission_required('permission')`` etc.
 * To configure the template names explicitly, use ``action_template_name``.
 
-Finally, for any other configuration of the generated class based views you'll need to define mixins that will be passed to the generated CBV classes as a list using the option ``action_mixins`` (again action is either ``list, detail``, etc).
+For any other configuration of the generated class based views you'll need to define mixins that will be passed to the generated CBV classes as a list using the option ``action_mixins`` (again action is either ``list, detail``, etc).
 
 Using mixins you can do whatever you want to your resulting CBV classes -- also, by forcing you to use mixins django-generic-scaffold will help you follow bet code practices (DRY).
+
+However, sometimes mixins are not enough and you may need to completely override the parent Views to use something else. For this, you may set the ``action_view_class`` property to your own parent class view (i.e ``list_view_class = OverridenListView``).
 
 API and template tags
 =====================
@@ -147,11 +149,17 @@ A sample config that uses a different form (``TestForm``), defines different beh
 Django/python version support
 =============================
 
-As can be seen from tox.ini, the tests are run for Python 2.7 and Django 1.6-1.9 and for Python 3.5 and Django 1.8-1.9, so these would be the supported versions.
+As can be seen from tox.ini, the tests are run for Python 2.7 and Django 1.6-1.10 and for Python 3.5 and Django 1.8-1.10, so these would be the supported versions.
         
 
 Changelog
 =========
+
+v.0.4.0
+-------
+
+- Add support for Django 1.10
+- Allow overriding the parent classes of all views
 
 v.0.3.3
 -------

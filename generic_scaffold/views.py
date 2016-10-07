@@ -70,6 +70,12 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
     detail_mixins = []
     create_mixins = []
     update_mixins = []
+    
+    list_view_class = ListView
+    create_view_class = CreateView
+    detail_view_class = DetailView
+    update_view_class = UpdateView
+    delete_view_class = DeleteView
 
     def __new__(cls):
         cls.app_label = get_app_label(cls.model)
@@ -135,7 +141,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
 
         parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.list_mixins)
-        parent_classes_list.append(ListView)
+        parent_classes_list.append(self.list_view_class)
 
         klazz = type(name, tuple(parent_classes_list), options_dict )
         klazz.get_context_data = self.get_get_context_data(klazz)
@@ -158,7 +164,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
 
         parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.create_mixins)
-        parent_classes_list.append(CreateView)
+        parent_classes_list.append(self.create_view_class)
         
         klazz = type(name, tuple(parent_classes_list), options_dict )
         klazz.get_context_data = self.get_get_context_data(klazz)
@@ -175,7 +181,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
         
         parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.detail_mixins)
-        parent_classes_list.append(DetailView)
+        parent_classes_list.append(self.detail_view_class)
 
         klazz = type(name, tuple(parent_classes_list), options_dict )
         klazz.get_context_data = self.get_get_context_data(klazz)
@@ -197,7 +203,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
 
         parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.update_mixins)
-        parent_classes_list.append(UpdateView)
+        parent_classes_list.append(self.update_view_class)
 
         klazz = type(name, tuple(parent_classes_list), options_dict )
         klazz.get_context_data = self.get_get_context_data(klazz)
@@ -216,7 +222,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
         
         parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.delete_mixins)
-        parent_classes_list.append(DeleteView)
+        parent_classes_list.append(self.delete_view_class)
 
         klazz = type(name, tuple(parent_classes_list), options_dict )
         klazz.get_context_data = self.get_get_context_data(klazz)

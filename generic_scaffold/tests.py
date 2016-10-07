@@ -2,10 +2,14 @@ from django.test import TestCase, RequestFactory, Client
 import django
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.views.generic import ListView, CreateView , DetailView, UpdateView, DeleteView
 from generic_scaffold import CrudManager, get_url_names
 from generic_scaffold.templatetags.generic_scaffold_tags import set_urls_for_scaffold
 
 class TestModel(models.Model):
+    test = models.CharField(max_length=16)
+    
+class TestModel2(models.Model):
     test = models.CharField(max_length=16)
     
 class TestEmptyModel(models.Model):
@@ -37,6 +41,22 @@ class TestExplicitCrudManager(CrudManager):
     delete_template_name = 'generic_scaffold/confirm_delete.html'
 
 
+class TestOverrideViewsCrudManager(CrudManager):
+    model = TestModel2
+    prefix = 'test_override_views'
+    
+    list_view_class = type('OverridenListView', (ListView, ), {} )
+    create_view_class = type('OverridenCreateView', (CreateView, ), {} )
+    detail_view_class = type('OverridenDetailView', (DetailView, ), {} )
+    update_view_class = type('OverridenUpdateView', (UpdateView, ), {} )
+    delete_view_class = type('OverridenDeleteView', (DeleteView, ), {} )
+    
+    list_template_name = 'generic_scaffold/list.html'
+    form_template_name = 'generic_scaffold/form.html'
+    detail_template_name = 'generic_scaffold/detail.html'
+    delete_template_name = 'generic_scaffold/confirm_delete.html'
+
+
 test_crud = TestCrudManager()
 urlpatterns = test_crud.get_url_patterns()
 
@@ -48,6 +68,9 @@ urlpatterns += test_implicit_crud.get_url_patterns()
 
 test_explicit_crud = TestExplicitCrudManager()
 urlpatterns += test_explicit_crud.get_url_patterns()
+
+test_override_crud = TestOverrideViewsCrudManager()
+urlpatterns += test_override_crud.get_url_patterns()
 
 
 class DuplicatesTest(TestCase):
@@ -61,7 +84,6 @@ class DuplicatesTest(TestCase):
                 'prefix': 'foo',
                 'model': TestModel,
             } )
-        
         
 
 class EmptyPrefixTest(TestCase):
@@ -245,3 +267,20 @@ class TestTempalteTags(TestCase):
         names = set_urls_for_scaffold(app='generic_scaffold', model='testmodel')
         for attr in ['list', 'create', 'update', 'delete', 'detail']:
             self.assertEquals( names[attr], "{0}_generic_scaffold_testmodel_{1}".format(TestCrudManager.prefix, attr))
+            
+
+class TestOverrideViews(TestCase):
+    def setUp(self):
+        self.crud = test_override_crud
+        self.list_view = self.crud.get_list_class_view()
+        self.create_view = self.crud.get_create_class_view()
+        self.update_view = self.crud.get_update_class_view()
+        self.delete_view = self.crud.get_delete_class_view()
+        self.detail_view = self.crud.get_detail_class_view()
+
+    def test_views_have_correct_parent_classes(self):
+        self.assertEquals(self.list_view.__bases__[-1].__name__, "OverridenListView")
+        self.assertEquals(self.create_view.__bases__[-1].__name__, "OverridenCreateView")
+        self.assertEquals(self.update_view.__bases__[-1].__name__, "OverridenUpdateView")
+        self.assertEquals(self.delete_view.__bases__[-1].__name__, "OverridenDeleteView")
+        self.assertEquals(self.detail_view.__bases__[-1].__name__, "OverridenDetailView")
