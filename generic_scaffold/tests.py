@@ -1,6 +1,9 @@
 from django.test import TestCase, RequestFactory, Client
 import django
-from django.core.urlresolvers import reverse
+if django.VERSION >= (2, 0, 0):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 from django.db import models
 from django.views.generic import ListView, CreateView , DetailView, UpdateView, DeleteView
 from generic_scaffold import CrudManager, get_url_names
@@ -8,23 +11,23 @@ from generic_scaffold.templatetags.generic_scaffold_tags import set_urls_for_sca
 
 class TestModel(models.Model):
     test = models.CharField(max_length=16)
-    
+
 class TestModel2(models.Model):
     test = models.CharField(max_length=16)
-    
+
 class TestEmptyModel(models.Model):
     test = models.CharField(max_length=16)
 
 class TestModelImplicit(models.Model):
     test = models.CharField(max_length=16)
-    
+
 class TestModelExplicit(models.Model):
     test = models.CharField(max_length=16)
 
 class TestCrudManager(CrudManager):
     model = TestModel
     prefix = 'test'
-    
+
 class TestEmptyPrefixCrudManager(CrudManager):
     model = TestEmptyModel
 
@@ -44,13 +47,13 @@ class TestExplicitCrudManager(CrudManager):
 class TestOverrideViewsCrudManager(CrudManager):
     model = TestModel2
     prefix = 'test_override_views'
-    
+
     list_view_class = type('OverridenListView', (ListView, ), {} )
     create_view_class = type('OverridenCreateView', (CreateView, ), {} )
     detail_view_class = type('OverridenDetailView', (DetailView, ), {} )
     update_view_class = type('OverridenUpdateView', (UpdateView, ), {} )
     delete_view_class = type('OverridenDeleteView', (DeleteView, ), {} )
-    
+
     list_template_name = 'generic_scaffold/list.html'
     form_template_name = 'generic_scaffold/form.html'
     detail_template_name = 'generic_scaffold/detail.html'
@@ -77,14 +80,14 @@ class DuplicatesTest(TestCase):
     def test_duplicate_prefix(self):
         with self.assertRaises(django.core.exceptions.ImproperlyConfigured):
             klazz = type("Thrower", (CrudManager, ), {'prefix': 'test',} )
-            
+
     def test_duplicate_model(self):
         with self.assertRaises(django.core.exceptions.ImproperlyConfigured):
             klazz = type("Thrower", (CrudManager, ), {
                 'prefix': 'foo',
                 'model': TestModel,
             } )
-        
+
 
 class EmptyPrefixTest(TestCase):
     def setUp(self):
@@ -246,28 +249,28 @@ class TemplateOrderingTest(TestCase):
 class TestUrlNames(TestCase):
     def setUp(self):
         pass
-        
+
     def test_get_url_names_with_prefix(self):
         names = get_url_names(prefix='test')
         for attr in ['list', 'create', 'update', 'delete', 'detail']:
             self.assertEquals( names[attr], "{0}_generic_scaffold_testmodel_{1}".format(TestCrudManager.prefix, attr))
-            
+
     def test_get_url_names_with_model(self):
         names = get_url_names(app='generic_scaffold', model='testmodel')
         for attr in ['list', 'create', 'update', 'delete', 'detail']:
             self.assertEquals( names[attr], "{0}_generic_scaffold_testmodel_{1}".format(TestCrudManager.prefix, attr))
-            
+
 class TestTempalteTags(TestCase):
     def test_template_tags_with_prefix(self):
         names = set_urls_for_scaffold(prefix='test')
         for attr in ['list', 'create', 'update', 'delete', 'detail']:
             self.assertEquals( names[attr], "{0}_generic_scaffold_testmodel_{1}".format(TestCrudManager.prefix, attr))
-            
+
     def test_get_url_names_with_model(self):
         names = set_urls_for_scaffold(app='generic_scaffold', model='testmodel')
         for attr in ['list', 'create', 'update', 'delete', 'detail']:
             self.assertEquals( names[attr], "{0}_generic_scaffold_testmodel_{1}".format(TestCrudManager.prefix, attr))
-            
+
 
 class TestOverrideViews(TestCase):
     def setUp(self):

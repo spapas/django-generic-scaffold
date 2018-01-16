@@ -1,7 +1,11 @@
 import django
 from django.conf.urls import url
 
-from django.core.urlresolvers import reverse
+if django.VERSION >= (2, 0, 0):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
+
 from django.views.generic import ListView, CreateView , DetailView, UpdateView, DeleteView, TemplateView
 from six import with_metaclass
 try:
@@ -19,7 +23,7 @@ def get_model_name(model):
 
 def get_app_label(model):
     return model._meta.app_label
-    
+
 
 class CrudTracker(type):
     def __init__(cls, name, bases, attrs):
@@ -29,7 +33,7 @@ class CrudTracker(type):
                 return
         except NameError:
             return
-            
+
         try:
             cls.prefix
         except AttributeError:
@@ -38,7 +42,7 @@ class CrudTracker(type):
         for r in CrudManager._registry:
             if r.prefix == cls.prefix:
                 raise django.core.exceptions.ImproperlyConfigured
-            
+
             if get_model_name(r.model)==get_model_name(cls.model) and \
                 get_app_label(r.model) == get_app_label(cls.model):
                 raise django.core.exceptions.ImproperlyConfigured
@@ -57,11 +61,11 @@ class FallbackTemplateMixin(object, ):
         elif self.kind in ['create', 'update']:
             fallback_name = 'form'
         else:
-            fallback_name = self.kind 
+            fallback_name = self.kind
         names.append('generic_scaffold/{0}.html'.format(fallback_name))
         return names
-        
-   
+
+
 
 class CrudManager(with_metaclass(CrudTracker, object, )):
     _registry = []
@@ -70,7 +74,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
     detail_mixins = []
     create_mixins = []
     update_mixins = []
-    
+
     list_view_class = ListView
     create_view_class = CreateView
     detail_view_class = DetailView
@@ -80,7 +84,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
     def __new__(cls):
         cls.app_label = get_app_label(cls.model)
         cls.model_name = get_model_name(cls.model)
-            
+
         if hasattr(cls, 'prefix') and cls.prefix:
             cls.list_url_name = '{0}_{1}_{2}'.format(cls.prefix, cls.get_name(), 'list')
             cls.create_url_name = '{0}_{1}_{2}'.format(cls.prefix, cls.get_name(), 'create')
@@ -93,13 +97,13 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
             cls.detail_url_name = '{0}_{1}'.format(cls.get_name(), 'detail')
             cls.update_url_name = '{0}_{1}'.format(cls.get_name(), 'update')
             cls.delete_url_name = '{0}_{1}'.format(cls.get_name(), 'delete')
-            
+
         cls.model.list_url_name = cls.list_url_name
         cls.model.detail_url_name = cls.detail_url_name
         cls.model.create_url_name = cls.create_url_name
         cls.model.update_url_name = cls.update_url_name
         cls.model.delete_url_name = cls.delete_url_name
-                
+
         return super(CrudManager, cls).__new__(cls)
 
     def __init__(self, *args, **kwargs):
@@ -135,7 +139,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
             'kind': 'list',
             'model': self.model,
         }
-        
+
         if hasattr(self, 'list_template_name') and self.list_template_name:
             options_dict['template_name'] = self.list_template_name
 
@@ -157,7 +161,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
         }
         if hasattr(self, 'form_template_name') and self.form_template_name:
             options_dict['template_name'] = self.form_template_name
-        
+
         if hasattr(self, 'form_class') and self.form_class:
             options_dict['form_class'] = self.form_class
             options_dict['fields'] = None
@@ -165,7 +169,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
         parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.create_mixins)
         parent_classes_list.append(self.create_view_class)
-        
+
         klazz = type(name, tuple(parent_classes_list), options_dict )
         klazz.get_context_data = self.get_get_context_data(klazz)
         return klazz
@@ -178,7 +182,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
         }
         if hasattr(self, 'detail_template_name') and self.detail_template_name:
             options_dict['template_name'] = self.detail_template_name
-        
+
         parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.detail_mixins)
         parent_classes_list.append(self.detail_view_class)
@@ -196,7 +200,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
         }
         if hasattr(self, 'form_template_name') and self.form_template_name:
             options_dict['template_name'] = self.form_template_name
-        
+
         if hasattr(self, 'form_class') and self.form_class:
             options_dict['form_class'] = self.form_class
             options_dict['fields'] = None
@@ -219,7 +223,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
         }
         if hasattr(self, 'delete_template_name') and self.delete_template_name:
             options_dict['template_name'] = self.delete_template_name
-        
+
         parent_classes_list = [FallbackTemplateMixin]
         parent_classes_list.extend(self.delete_mixins)
         parent_classes_list.append(self.delete_view_class)
@@ -230,7 +234,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
 
     def get_url_patterns(self, ):
         prefix = hasattr(self, 'prefix') and self.prefix or ''
-        
+
         url_patterns = [
             url(r'^'+prefix+'$', self.perms['list'](self.get_list_class_view().as_view()), name=self.list_url_name, ),
             url(r'^'+prefix+'create/$', self.perms['create'](self.get_create_class_view().as_view()), name=self.create_url_name ),
@@ -238,7 +242,7 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
             url(r'^'+prefix+'update/(?P<pk>\d+)$', self.perms['update'](self.get_update_class_view().as_view()), name=self.update_url_name ),
             url(r'^'+prefix+'delete/(?P<pk>\d+)$', self.perms['delete'](self.get_delete_class_view().as_view()), name=self.delete_url_name ),
         ]
-        
+
         if django.VERSION >= (1, 8, 0):
             return url_patterns
         else:
@@ -256,9 +260,9 @@ class CrudManager(with_metaclass(CrudTracker, object, )):
                     'delete': r.delete_url_name,
                     'detail': r.detail_url_name,
                 }
-                
+
 def get_url_names(app=None, model=None, prefix=None):
     model_class = None
-    if app and model: 
+    if app and model:
         model_class = get_model(app, model)
     return CrudManager.get_url_names(prefix=prefix, model_class=model_class)

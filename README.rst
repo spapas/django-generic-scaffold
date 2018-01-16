@@ -155,6 +155,11 @@ As can be seen from tox.ini, the tests are run for Python 2.7 and Django 1.6-1.1
 Changelog
 =========
 
+v.0.5.0
+-------
+
+- Add support for Django 2
+
 v.0.4.1
 -------
 
