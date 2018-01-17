@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
+def readme():
+    with open('README.rst') as f:
+        return f.read()
+
 setup(
     name='django-generic-scaffold',
-    version='0.5.0',
+    version='0.5.2',
     description='Generic scaffolding for Django',
-
+    long_description=readme(),
     author='Serafeim Papastefanos',
     author_email='spapas@gmail.com',
     license='MIT',
