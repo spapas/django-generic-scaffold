@@ -2,6 +2,8 @@
 django-generic-scaffold
 =======================
 
+[![Build Status](https://travis-ci.org/spapas/django-generic-scaffold.svg?branch=master)](https://travis-ci.org/spapas/django-generic-scaffold)
+
 With django-generic-scaffold you can quickly create and CRUD generic class based views for your models so you will have a basic CRUD interface to your models by writing only a couple of lines of extra code! The purpose of this CRUD interface is, as opposed to django-admin, to be used by users and not staff members.
 
 django-generic-scaffold is different from other scaffolding tools because it generates all views/url routes *on-the-fly* (by creating subclasses of normal django class-based views) and *not* by outputing python code.
