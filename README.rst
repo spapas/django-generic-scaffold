@@ -149,11 +149,18 @@ A sample config that uses a different form (``TestForm``), defines different beh
 Django/python version support
 =============================
 
-As can be seen from tox.ini, the tests are run for Python 2.7 and Django 1.6-1.11 and for Python 3.5 and Django 1.8-1.11, so these would be the supported versions.
+As can be seen from tox.ini, the tests are run for Python 2.7 and Django
+1.6-1.11 and for Python 3.5 and Django 1.8-2.1, so these are the
+supported versions.
         
 
 Changelog
 =========
+
+v.0.5.3
+-------
+
+- Add Django 2.1 to tox.ini
 
 v.0.5.2
 -------

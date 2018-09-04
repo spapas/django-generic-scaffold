@@ -54,3 +54,7 @@ docs/_build/
 # PyBuilder
 target/
 .DS_Store
+
+tags
+tags.lock
+tags.temp
