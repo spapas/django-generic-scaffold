@@ -2,6 +2,10 @@
 django-generic-scaffold
 =======================
 
+.. image:: https://travis-ci.org/spapas/django-generic-scaffold.svg?branch=master
+    :target: https://travis-ci.org/spapas/django-generic-scaffold
+    
+
 With django-generic-scaffold you can quickly create and CRUD generic class based views for your models so you will have a basic CRUD interface to your models by writing only a couple of lines of extra code! The purpose of this CRUD interface is, as opposed to django-admin, to be used by users and not staff members.
 
 django-generic-scaffold is different from other scaffolding tools because it generates all views/url routes *on-the-fly* (by creating subclasses of normal django class-based views) and *not* by outputing python code.
@@ -149,10 +153,9 @@ A sample config that uses a different form (``TestForm``), defines different beh
 Django/python version support
 =============================
 
-As can be seen from tox.ini, the tests are run for Python 2.7 and Django
-1.6-1.11 and for Python 3.5 and Django 1.8-2.1, so these are the
+As can be seen from tox.ini, the tests are run for Python 2.7 with Django
+1.6-1.11 and for Python 3.5 with Django 1.8-2.1, so these are the
 supported versions.
-        
 
 Changelog
 =========
