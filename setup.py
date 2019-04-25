@@ -7,7 +7,7 @@ def readme():
 
 setup(
     name='django-generic-scaffold',
-    version='0.5.2',
+    version='0.5.4',
     description='Generic scaffolding for Django',
     long_description=readme(),
     author='Serafeim Papastefanos',
@@ -18,7 +18,7 @@ setup(
     include_package_data=True,
     packages=find_packages(exclude=['tests.*', 'tests',]),
 
-    install_requires=['Django >=1.6', 'six'],
+    install_requires=['Django >=1.8', 'six'],
 
     classifiers=[
         'Environment :: Web Environment',
@@ -33,6 +33,8 @@ setup(
         'Framework :: Django :: 1.10',
         'Framework :: Django :: 1.11',
         'Framework :: Django :: 2.0',
+        'Framework :: Django :: 2.1',
+        'Framework :: Django :: 2.2',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',

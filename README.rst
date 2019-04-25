@@ -6,9 +6,10 @@ django-generic-scaffold
     :target: https://travis-ci.org/spapas/django-generic-scaffold
     
 
-With django-generic-scaffold you can quickly create and CRUD generic class based views for your models so you will have a basic CRUD interface to your models by writing only a couple of lines of extra code! The purpose of this CRUD interface is, as opposed to django-admin, to be used by users and not staff members.
+With django-generic-scaffold you can quickly create CRUD generic class based views for your models so you will have a basic CRUD interface to your models by writing only a couple of lines of extra code! The purpose of this CRUD interface is, as opposed to django-admin, to be used by users and not staff members.
 
-django-generic-scaffold is different from other scaffolding tools because it generates all views/url routes *on-the-fly* (by creating subclasses of normal django class-based views) and *not* by outputing python code.
+django-generic-scaffold is different from other scaffolding tools because it generates all views/url routes *on-the-fly* (by creating subclasses of normal django class-based views) and *not* by outputing python code. This way you can re-configure
+your views anytime you wish.
 
 Example
 =======
@@ -128,7 +129,6 @@ For example, you can do something like:
     list_url = reverse(names['list'])
 
 
-
 Sample configuration
 ====================
 
@@ -154,11 +154,18 @@ Django/python version support
 =============================
 
 As can be seen from tox.ini, the tests are run for Python 2.7 with Django
-1.6-1.11 and for Python 3.5 with Django 1.8-2.1, so these are the
-supported versions.
+1.8-1.11 and for Python 3.6 with Django 1.8-2.2, so these are the
+supported versions. Python 3.7 should also work without problems, I just have
+Python 3.6 installed on system so I test with this version.
 
 Changelog
 =========
+
+v.0.5.4
+-------
+
+- Add Django 2.2 to tox.ini
+- Drop support for Django < 1.8
 
 v.0.5.3
 -------
