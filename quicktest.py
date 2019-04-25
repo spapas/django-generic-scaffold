@@ -25,6 +25,7 @@ class QuickDjangoTest(object):
         'django.contrib.auth',
         'django.contrib.contenttypes',
         'django.contrib.sessions',
+        'django.contrib.messages',
         'django.contrib.admin',
     ]
 
@@ -61,6 +62,12 @@ class QuickDjangoTest(object):
                         ],
                     },
                 }]
+                
+        django_settings['MIDDLEWARE'] = [
+            'django.contrib.sessions.middleware.SessionMiddleware',
+            'django.contrib.auth.middleware.AuthenticationMiddleware',
+            'django.contrib.messages.middleware.MessageMiddleware'
+        ]
 
         settings.configure(**django_settings)
 
