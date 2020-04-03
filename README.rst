@@ -110,13 +110,15 @@ If you want to use the provided template tags to your templates, you'll need to 
 the top of your template. Then you may use ``set_urls_for_scaffold`` which will output the URLs of the 
 selected scaffold depending on your configuration. This tag can receive
 three parameters: The django app name, the model name and the prefix name. You can either use
-the combination of app name / model name or just the prefix. It will return a dictionary with all
+the combination of app name / model name or just the prefix.
+
+It will return a dictionary with all
 the scaffolded urls for this model. For example, to get the url names for the model ``test2`` (careful you must use the internal model name so for ``Test2`` use ``test2`` ) 
 belonging to the app ``test1`` you'll use ``{% set_urls_for_scaffold "test1" "test2" as url_names %}`` and then you could use the attributes ``list,
 create, detail, update, delete`` of that object to reverse and get the corresponding urls, for example
 use ``{% url url_names.list }`` to get the url for list. 
 
-There's also a similar API function named get_url_names that you can use to get the urls for your scaffolds.
+There's also a similar API function named ``get_url_names that`` you can use to get the urls for your scaffolds.
 
 For example, you can do something like:
 
@@ -128,6 +130,7 @@ For example, you can do something like:
     names = get_url_names(prefix='test')
     list_url = reverse(names['list'])
 
+Please notice above that if you need to call the above template tag or function with the prefix you need to pass the parameter name i.e call it like ``{% set_urls_for_scaffold prefix="my_prefix" as url_names %}``.
 
 Sample configuration
 ====================
@@ -177,6 +180,17 @@ As you can understand the main purpose of this library is to be able to add CRUD
     def get_absolute_url(self):
         return reverse(get_url_names(prefix='companies/')['detail'], args=[self.id])
 
+- Continuing the above ``Company`` example you could add the following template tag to the company related templates:
+
+.. code-block:: python
+  
+  {% load generic_scaffold_tags %}
+  [...]
+  {% set_urls_for_scaffold prefix="companies/" as co_url_names %}
+  
+And then you'd be able to access the urls like: ``{% url co_url_names.list %}`` or ``{% url co_url_names.detail %}``. If for some reason you'd prefer to access the url name directly you can generate yourself using the following algorithm: ``{prefix}_{app_name}_{model_name}_{method}`` where the ``method`` is one of list/create/update/detail/delete.
+
+For our ``Company`` example, if the app name is called ``core`` the name of the list view would be ``companies/_katamet_company_detail`` (notice that the prefix is ``companies/``).
 
 
 Changelog
