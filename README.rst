@@ -132,6 +132,8 @@ For example, you can do something like:
 
 Please notice above that if you need to call the above template tag or function with the prefix you need to pass the parameter name i.e call it like ``{% set_urls_for_scaffold prefix="my_prefix" as url_names %}``.
 
+Finally, if for some reason you'd prefer to access the url name directly without using the above you can generate the url name of a scaffolded view yourself using the following algorithm: ``{prefix}_{app_name}_{model_name}_{method}`` where the method is one of list/create/update/detail/delete. This could then be used directly with ``{% url %}`` or ``reverse``.
+
 Sample configuration
 ====================
 
@@ -188,9 +190,9 @@ As you can understand the main purpose of this library is to be able to add CRUD
   [...]
   {% set_urls_for_scaffold prefix="companies/" as co_url_names %}
   
-And then you'd be able to access the urls like: ``{% url co_url_names.list %}`` or ``{% url co_url_names.detail %}``. If for some reason you'd prefer to access the url name directly you can generate yourself using the following algorithm: ``{prefix}_{app_name}_{model_name}_{method}`` where the ``method`` is one of list/create/update/detail/delete.
+And then you'd be able to access the urls like: ``{% url co_url_names.list %}`` or ``{% url co_url_names.detail %}``. 
 
-For our ``Company`` example, if the app name is called ``core`` the name of the list view would be ``companies/_katamet_company_detail`` (notice that the prefix is ``companies/``).
+- As mentioned above, If for some reason you'd prefer to access the url name directly you can generate yourself using the following algorithm: ``{prefix}_{app_name}_{model_name}_{method}``. Thus for our ``Company`` example, if the app name is called ``core`` the name of the list view would be ``companies/_core_company_detail`` (notice that the prefix is ``companies/``).
 
 
 Changelog
