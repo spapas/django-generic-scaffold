@@ -194,6 +194,18 @@ And then you'd be able to access the urls like: ``{% url co_url_names.list %}`` 
 
 - As mentioned above, If for some reason you'd prefer to access the url name directly you can generate yourself using the following algorithm: ``{prefix}_{app_name}_{model_name}_{method}``. Thus for our ``Company`` example, if the app name is called ``core`` the name of the list view would be ``companies/_core_company_detail`` (notice that the prefix is ``companies/``).
 
+- Sometimes django-generic-scaffold creates more views than you'd like! For example, for various reasons I usually avoid having delete views. Also for small models you may don't need a detail view. To "disable" a view you can use the following simple mixin:
+
+.. code-block:: python
+
+  from django.core.exceptions import PermissionDenied
+
+  class NotAllowedMixin(object, ):
+    def get_queryset(self):
+      raise PermissionDenied
+
+Then when you define your ``CrudManager`` use that as the mixin for your method, for example if you want to disable delete you'll add:
+``delete_mixins = (NotAllowedMixin, )``. I guess it would be better if the ``CrudManager`` had a way to actually define which methods you need but this solution is much easier (for me) :)
 
 Changelog
 =========
