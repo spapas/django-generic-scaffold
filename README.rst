@@ -158,6 +158,25 @@ As can be seen from tox.ini, the tests are run for Python 2.7 with Django
 supported versions. Python 3.7 should also work without problems, I just have
 Python 3.6 installed on system so I test with this version.
 
+
+Some trickery for django-generic-scaffold
+=========================================
+
+As you can understand the main purpose of this library is to be able to add CRUD for as many models in your project with as little mental effort as possible. Here are some more tricks that you can use for this package:
+
+- For a model called "Company" I would use a prefix "companies/" (notice the slash at the end). This may seem a little strange at first but it creates nice looking urls like: /companies/ (for list), /companies/detail/3 (for detail) etc.
+
+-  Add a `get_absolute_url` method to your models to avoid having to declare where to redirect after a successful post when creating/editing instances. For example for the same Company model I'd do it like this:
+
+```
+from generic_scaffold import get_url_names
+
+class Company(models.Model):
+
+    def get_absolute_url(self):
+        return reverse(get_url_names(prefix='companies/')['detail'], args=[self.id])
+```
+
 Changelog
 =========
 
