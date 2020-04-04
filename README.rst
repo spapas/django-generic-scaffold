@@ -4,7 +4,7 @@ django-generic-scaffold
 
 .. image:: https://travis-ci.org/spapas/django-generic-scaffold.svg?branch=master
     :target: https://travis-ci.org/spapas/django-generic-scaffold
-    
+
 
 With django-generic-scaffold you can quickly create CRUD generic class based views for your models so you will have a basic CRUD interface to your models by writing only a couple of lines of extra code! The purpose of this CRUD interface is, as opposed to django-admin, to be used by users and not staff members.
 
@@ -44,22 +44,22 @@ Now, include the following lines to the ``urls.py`` of your application:
 .. code-block:: python
 
     from scaffolding import BookCrudManager # or from views import BookCrudManager depending on where you've put it
-    book_crud = BookCrudManager() 
-    
+    book_crud = BookCrudManager()
+
     # [...] define your urlpatters here
-    
+
     urlpatterns += book_crud.get_url_patterns()
 
 
-You may now visit ``http://127.0.0.1:8000/books`` (or whatever was your ``prefix``) to get a list of your ``Book`` instances. 
-The following methods have also been created: 
+You may now visit ``http://127.0.0.1:8000/books`` (or whatever was your ``prefix``) to get a list of your ``Book`` instances.
+The following methods have also been created:
 
-* Create: ``http://127.0.0.1:8000/bookscreate``       
-* Detail: ``http://127.0.0.1:8000/booksdetail/<id>``  
-* Edit: ``http://127.0.0.1:8000/booksupdate/<id>``    
-* Delete: ``http://127.0.0.1:8000/booksdelete/<id>``  
+* Create: ``http://127.0.0.1:8000/bookscreate``
+* Detail: ``http://127.0.0.1:8000/booksdetail/<id>``
+* Edit: ``http://127.0.0.1:8000/booksupdate/<id>``
+* Delete: ``http://127.0.0.1:8000/booksdelete/<id>``
 
-If you don't do anything else, the default fallback templates will be used (they are ugly and should only be used for testing). 
+If you don't do anything else, the default fallback templates will be used (they are ugly and should only be used for testing).
 You should add a template named ``app_name/testmodel_list.html`` (which is the default template for the ``ListView``) to override
 the fallback templates - please read the next section for more info on that.
 
@@ -75,8 +75,8 @@ quickly see that everything works). Now, there are two ways you can redefine you
 
 * Implicitly: Just add appropriate templates depending on your app/model name (similarly to normal class-based-views), for example for ``app_name`` and ``TestModel`` you can add the following templates:
 
-For create/update add ``app_name/testmodel_form.html``, 
-for list add ``app_name/testmodel_list.html``, 
+For create/update add ``app_name/testmodel_form.html``,
+for list add ``app_name/testmodel_list.html``,
 for detail add ``app_name/testmodel_detail.html``,
 for delete add ``app_name/testmodel_confirm_delete.html``.
 
@@ -107,16 +107,16 @@ API and template tags
 =====================
 
 If you want to use the provided template tags to your templates, you'll need to add ``{% load generic_scaffold_tags %}`` near
-the top of your template. Then you may use ``set_urls_for_scaffold`` which will output the URLs of the 
+the top of your template. Then you may use ``set_urls_for_scaffold`` which will output the URLs of the
 selected scaffold depending on your configuration. This tag can receive
 three parameters: The django app name, the model name and the prefix name. You can either use
 the combination of app name / model name or just the prefix.
 
 It will return a dictionary with all
-the scaffolded urls for this model. For example, to get the url names for the model ``test2`` (careful you must use the internal model name so for ``Test2`` use ``test2`` ) 
+the scaffolded urls for this model. For example, to get the url names for the model ``test2`` (careful you must use the internal model name so for ``Test2`` use ``test2`` )
 belonging to the app ``test1`` you'll use ``{% set_urls_for_scaffold "test1" "test2" as url_names %}`` and then you could use the attributes ``list,
 create, detail, update, delete`` of that object to reverse and get the corresponding urls, for example
-use ``{% url url_names.list }`` to get the url for list. 
+use ``{% url url_names.list }`` to get the url for list.
 
 There's also a similar API function named ``get_url_names that`` you can use to get the urls for your scaffolds.
 
@@ -185,12 +185,12 @@ As you can understand the main purpose of this library is to be able to add CRUD
 - Continuing the above ``Company`` example you could add the following template tag to the company related templates:
 
 .. code-block:: python
-  
+
   {% load generic_scaffold_tags %}
   [...]
   {% set_urls_for_scaffold prefix="companies/" as co_url_names %}
-  
-And then you'd be able to access the urls like: ``{% url co_url_names.list %}`` or ``{% url co_url_names.detail %}``. 
+
+And then you'd be able to access the urls like: ``{% url co_url_names.list %}`` or ``{% url co_url_names.detail %}``.
 
 - As mentioned above, If for some reason you'd prefer to access the url name directly you can generate yourself using the following algorithm: ``{prefix}_{app_name}_{model_name}_{method}``. Thus for our ``Company`` example, if the app name is called ``core`` the name of the list view would be ``companies/_core_company_detail`` (notice that the prefix is ``companies/``).
 
@@ -207,8 +207,15 @@ And then you'd be able to access the urls like: ``{% url co_url_names.list %}`` 
 Then when you define your ``CrudManager`` use that as the mixin for your method, for example if you want to disable delete you'll add:
 ``delete_mixins = (NotAllowedMixin, )``. I guess it would be better if the ``CrudManager`` had a way to actually define which methods you need but this solution is much easier (for me) :)
 
+- If you want to change the fields that appear in the Create/Update views you'll need to define a ``form_class``. Without it all fields will be visible.
+
 Changelog
 =========
+
+v.0.5.5
+-------
+
+- Add Django 3.0 to tox.ini
 
 v.0.5.4
 -------
@@ -246,7 +253,7 @@ v.0.4.0
 v.0.3.3
 -------
 
-- Fix bug with django 1.9 not containing the (url) patterns function 
+- Fix bug with django 1.9 not containing the (url) patterns function
 
 v.0.3.2
 -------
@@ -256,7 +263,7 @@ v.0.3.2
 v.0.3.1
 -------
 
-- Fix bug with '__all__' fields when adding form_class 
+- Fix bug with '__all__' fields when adding form_class
 
 v.0.3.0
 -------
@@ -269,10 +276,10 @@ v.0.2.0
 
 - Braking changes for API and template tags
 - Add example project
-- Add support and configure tox for Django 1.9 
+- Add support and configure tox for Django 1.9
 - A bunch of fallback templates have been added (``generic_scaffold/{list, detail, form, confirm_delete}.html``)
 - Use API (get_url_names) for tests and add it to docs
-- Add (url) prefix as an attribute to CrudManager and fix templatetag to use it. 
+- Add (url) prefix as an attribute to CrudManager and fix templatetag to use it.
 - Prefix has to be unique to make API and template tags easier to use
 - Model also has to be unique
 

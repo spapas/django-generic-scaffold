@@ -1,7 +1,7 @@
 language: python
 dist: xenial
 install:
-  - pip install tox 
+  - pip install tox
 script:
   - tox
 env:
@@ -16,3 +16,4 @@ env:
   - TOXENV=py36-django20
   - TOXENV=py36-django21
   - TOXENV=py36-django22
+  - TOXENV=py36-django30

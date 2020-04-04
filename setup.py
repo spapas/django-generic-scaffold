@@ -7,7 +7,7 @@ def readme():
 
 setup(
     name='django-generic-scaffold',
-    version='0.5.4',
+    version='0.5.5',
     description='Generic scaffolding for Django',
     long_description=readme(),
     author='Serafeim Papastefanos',
