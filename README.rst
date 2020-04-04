@@ -5,11 +5,18 @@ django-generic-scaffold
 .. image:: https://travis-ci.org/spapas/django-generic-scaffold.svg?branch=master
     :target: https://travis-ci.org/spapas/django-generic-scaffold
 
+.. image:: https://badge.fury.io/py/django-generic-scaffold.svg
+    :target: https://badge.fury.io/py/django-generic-scaffold
+    
+   
 
 With django-generic-scaffold you can quickly create CRUD generic class based views for your models so you will have a basic CRUD interface to your models by writing only a couple of lines of extra code! The purpose of this CRUD interface is, as opposed to django-admin, to be used by users and not staff members.
 
 django-generic-scaffold is different from other scaffolding tools because it generates all views/url routes *on-the-fly* (by creating subclasses of normal django class-based views) and *not* by outputing python code. This way you can re-configure
 your views anytime you wish.
+
+As you can understand the main purpose of this library is to be able to add CRUD for as many models in your project with as little mental effort as possible. Nothing beats the django-admin for that of course but usually you don't want to give access to /admin to all the users that will do data entry. I've found this project to be invaluable to my work (I mostly create apps to by used internally by the members of a public sector org); I guess it should also be very useful when you need to create a quick MVP for your project.
+
 
 Example
 =======
@@ -163,11 +170,21 @@ As can be seen from tox.ini, the tests are run for Python 2.7 with Django
 supported versions. Python 3.7/3.8 should also work without problems, I just have
 Python 3.6 installed on my (Windows) system so I test with this version.
 
+.. list-table:: Python Django Version Support
+   :widths: 25 25
+   :header-rows: 1
+
+   * - Python Version
+     - Django Version
+   * - 2.7
+     - 1.8-1.11
+   * - 3.6+
+     - 1.8-3.0
 
 Some trickery for django-generic-scaffold
 =========================================
 
-As you can understand the main purpose of this library is to be able to add CRUD for as many models in your project with as little mental effort as possible. Here are some more tricks that you can use for this package:
+Here are some more tricks and advice to make even better usage of this package:
 
 - For a model called ``Company`` I would use a prefix `"companies/"` (notice the slash at the end). This may seem a little strange at first but it creates nice looking urls like: ``/companies/`` (for list), ``/companies/detail/3`` (for detail) etc.
 
