@@ -15,6 +15,8 @@ With django-generic-scaffold you can quickly create CRUD generic class based vie
 django-generic-scaffold is different from other scaffolding tools because it generates all views/url routes *on-the-fly* (by creating subclasses of normal django class-based views) and *not* by outputing python code. This way you can re-configure
 your views anytime you wish.
 
+As you can understand the main purpose of this library is to be able to add CRUD for as many models in your project with as little mental effort as possible. Nothing beats the django-admin for that of course but usually you don't want to give access to /admin to all the users that will do data entry. I've found this project to be invaluable to my work (I mostly create apps to by used internally by the members of a public sector org); I guess it should also be very useful when you need to create a quick MVP for your project.
+
 
 Example
 =======
@@ -182,7 +184,7 @@ Python 3.6 installed on system so I test with this version.
 Some trickery for django-generic-scaffold
 =========================================
 
-As you can understand the main purpose of this library is to be able to add CRUD for as many models in your project with as little mental effort as possible. Here are some more tricks that you can use for this package:
+Here are some more tricks and advice to make even better usage of this package:
 
 - For a model called ``Company`` I would use a prefix `"companies/"` (notice the slash at the end). This may seem a little strange at first but it creates nice looking urls like: ``/companies/`` (for list), ``/companies/detail/3`` (for detail) etc.
 
