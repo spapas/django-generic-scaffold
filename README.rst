@@ -179,7 +179,7 @@ Python 3.6 installed on my (Windows) system so I test with this version.
    * - 2.7
      - 1.8-1.11
    * - 3.6+
-     - 1.8-3.0
+     - 1.8-3.1
 
 Some trickery for django-generic-scaffold
 =========================================
