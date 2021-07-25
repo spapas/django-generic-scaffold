@@ -28,6 +28,7 @@ class QuickDjangoTest(object):
         'django.contrib.messages',
         'django.contrib.admin',
     ]
+    
 
     def __init__(self, *args, **kwargs):
         self.apps = kwargs.get('apps', [])
@@ -46,7 +47,8 @@ class QuickDjangoTest(object):
             'INSTALLED_APPS':self.INSTALLED_APPS + self.apps,
             'STATIC_URL':'/static/',
             'ROOT_URLCONF':'generic_scaffold.tests',
-            'SILENCED_SYSTEM_CHECKS':['1_7.W001']
+            'SILENCED_SYSTEM_CHECKS':['1_7.W001'],
+            'SECRET_KEY':'123',
         }
 
         if django.VERSION >= (1, 8, 0):
@@ -69,11 +71,15 @@ class QuickDjangoTest(object):
             'django.contrib.messages.middleware.MessageMiddleware'
         ]
 
+        if django.VERSION >= (3, 2, 0):
+            django_settings['DEFAULT_AUTO_FIELD'] = 'django.db.models.BigAutoField'
+            
         settings.configure(**django_settings)
 
         if django.VERSION >= (1, 7, 0):
             # see: https://docs.djangoproject.com/en/dev/releases/1.7/#standalone-scripts
             django.setup()
+        
 
         from django.test.runner import DiscoverRunner as Runner
 
