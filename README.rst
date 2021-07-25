@@ -226,6 +226,39 @@ Then when you define your ``CrudManager`` use that as the mixin for your method,
 
 - If you want to change the fields that appear in the Create/Update views you'll need to define a ``form_class``. Without it all fields will be visible.
 
+- You'll probably need to fix your query to avoid n+1 problems. This can easily be done with a mixin like this:
+
+.. code-block:: python
+
+  class FixQuerysetMixin(object, ):
+    def get_queryset(self):
+        return super(FixQuerysetMixin, self).get_queryset().select_related(
+            'field1', 'field2'
+        )
+        
+You can then add that mixin to either your ``CrudManager`` corresponding ``list_mixins`` or ``detail_mixins`` list.
+
+- My list views *always* use a table (from https://github.com/jieter/django-tables2) and a filter (from https://github.com/carltongibson/django-filter). If you want to move your DRYness to the next level, you can add the following mixin to your CrudManager's ``list_mixins`` to auto-add both a table and a filter to your list view:
+
+.. code-block:: python
+
+  import filters, tables
+
+  class AddFilterTableMixin(object, ):
+    def get_context_data(self, **kwargs):
+        context = super(AddFilterTableMixin, self).get_context_data(**kwargs)
+        qs = self.get_queryset()
+        filter = getattr(filters, self.model.__name__+'Filter')(self.request.GET, qs)
+        table = getattr(tables, self.model.__name__+'Table')(filter.qs)
+        RequestConfig(self.request, paginate={"per_page": 15}).configure(table)
+        context['table'] = table
+        context['filter'] = filter
+        return context
+
+This will try to find a ``filters.XFilter`` and ``tables.XTable`` class in the ``filters`` and ``tables`` modules (you need to import them ofcourse). So if your model name is ``Company`` it will use the ``CompanyFilter`` and ``CompanyTable`` classes!
+
+Now this could be made even more DRY by using some ``type`` magic to auto-generate the table and filer class on the fly; however I've concluded that you'll almost always need to configure them to define which fields to display at the table and which fields to use at te filter so I don't think it's really worth it.
+
 Changelog
 =========
 
