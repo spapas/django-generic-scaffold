@@ -262,6 +262,11 @@ Now this could be made even more DRY by using some ``type`` magic to auto-genera
 Changelog
 =========
 
+v.0.5.6
+-------
+
+- Add Django 4.0 to tox.ini
+
 v.0.5.5
 -------
 

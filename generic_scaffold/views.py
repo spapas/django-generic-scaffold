@@ -1,5 +1,8 @@
 import django
-from django.conf.urls import url
+if django.VERSION >= (4, 0, 0):
+    from django.urls import re_path as url
+else:
+    from django.conf.urls import url
 
 if django.VERSION >= (2, 0, 0):
     from django.urls import reverse
