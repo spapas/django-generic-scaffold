@@ -2,8 +2,8 @@
 django-generic-scaffold
 =======================
 
-.. image:: https://travis-ci.org/spapas/django-generic-scaffold.svg?branch=master
-    :target: https://travis-ci.org/spapas/django-generic-scaffold
+.. image:: https://github.com/spapas/django-generic-scaffold/actions/workflows/gh.yml/badge.svg
+    :target: https://github.com/spapas/django-generic-scaffold/actions/workflows/gh.yml
 
 .. image:: https://badge.fury.io/py/django-generic-scaffold.svg
     :target: https://badge.fury.io/py/django-generic-scaffold
