@@ -166,7 +166,7 @@ Django/python version support
 =============================
 
 As can be seen from tox.ini, the tests are run for Python 2.7 with Django
-1.8-1.11 and for Python 3.8 with Django 1.11-3.2, so these are the
+1.8-1.11 and for Python 3.8 with Django 1.11-4.0, so these are the
 supported versions. Python 3.6/3.7 should also work without problems, I just have
 Python 3.8 installed on my (Windows) system so I test with this version.
 
@@ -179,7 +179,7 @@ Python 3.8 installed on my (Windows) system so I test with this version.
    * - 2.7
      - 1.8-1.11
    * - 3.8+
-     - 1.11-3.2
+     - 1.11-4.0
 
 Some trickery for django-generic-scaffold
 =========================================
