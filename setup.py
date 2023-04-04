@@ -7,7 +7,7 @@ def readme():
 
 setup(
     name='django-generic-scaffold',
-    version='0.5.6',
+    version='0.5.7',
     description='Generic scaffolding for Django',
     long_description=readme(),
     author='Serafeim Papastefanos',
@@ -41,6 +41,8 @@ setup(
         'Framework :: Django :: 3.1',
         'Framework :: Django :: 3.2',
         'Framework :: Django :: 4.0',
+        'Framework :: Django :: 4.1',
+        'Framework :: Django :: 4.2',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
