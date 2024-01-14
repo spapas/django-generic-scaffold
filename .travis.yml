@@ -25,3 +25,4 @@ env:
   - TOXENV=py311-django40
   - TOXENV=py311-django41
   - TOXENV=py311-django42
+  - TOXENV=py311-django50
