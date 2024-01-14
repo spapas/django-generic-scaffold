@@ -165,8 +165,7 @@ A sample config that uses a different form (``TestForm``), defines different beh
 Django/python version support
 =============================
 
-As can be seen from tox.ini, the tests are run for Python 2.7 with Django
-1.8-1.11 and for Python 3.8 and Python 3.11 with Django 1.11-4.2, so these are the
+As can be seen from tox.ini, the tests are run for Python for Python 3.8 and Python 3.11 with Django 3.2-5, so these are the
 supported versions. Intermediate versions should also work without problems.
 
 .. list-table:: Python Django Version Support
@@ -175,10 +174,8 @@ supported versions. Intermediate versions should also work without problems.
 
    * - Python Version
      - Django Version
-   * - 2.7
-     - 1.8-1.11
    * - 3.8+
-     - 1.11-4.2
+     - 3.2-5.0
 
 Some trickery for django-generic-scaffold
 =========================================
@@ -260,6 +257,11 @@ Now this could be made even more DRY by using some ``type`` magic to auto-genera
 
 Changelog
 =========
+
+v.0.6.0
+-------
+
+- Support Django 5, remove old versions
 
 v.0.5.7
 -------
